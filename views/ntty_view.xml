@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+
+        <!-- view specific to res.partner -->
+        <record model="ir.ui.view" id="view_partner_form_ntty">
+            <field name="name">view.partner.form.ntty</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="website" position="after">
+                      <field name="ntty_partner_id" />
+                      <field name="ntty_url" widget="url"/>
+                </field>
+                <field name="user_id" position="after">
+                        <field name="mnda" />
+                </field>
+            </field>
+        </record>
+
+
+        <record model="ir.ui.view" id="view_ntty_config_form">
+            <field name="name">ntty.config.form</field>
+            <field name="model">ntty.config.settings</field>
+            <field name="arch" type="xml">
+		<form string="NTTY Configuration">
+			<group>
+	                        <field name="ntty_service_address" />
+        	                <field name="ntty_service_user_email" />
+                	        <field name="ntty_service_token" />
+			</group>
+		</form>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="product_template_form_view_ntty_id_field">
+            <field name="name">product.template.ntty.ntty_id_field</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_form_view"/>
+            <field name="arch" type="xml">
+		<notebook>
+			<page string="NTTY">
+			    <group name="Information">
+		                <field name="ntty_id" string="NTTY ID"/>
+		                <field name="article_part_number" string="Product Owner Reference"/>
+                		<field name="product_code" string="Product Code"/>
+                    		<field name="ntty_url" widget="url"/>
+			    </group>
+	                    <group name="Panelization" string="Panel Data" attrs="{'invisible':[('type','=','service')]}">
+        	                    <field name="panel_factor"/>
+                	            <field name="panel_weight"/>
+                        	    <field name="panel_width"/>
+	                            <field name="panel_length"/>
+        	                    <field name="panel_thickness"/>
+                	            <field name="panel_type"/>
+                        	    <field name="pcb_weight"/>
+	                            <field name="sqm_pcb"/>
+        	                    <field name="signal_layers"/>
+                	            <field name="lifecycle" attrs="{'invisible':True}"/>
+	                    </group>
+        	            <group name="Certifications" string="Certifications">
+                	            <field name="ntty_ul"/>
+                        	    <field name="ntty_rohs"/>
+		            </group>
+			</page>
+	        	<field name="state" position="after">
+                            <field name="lifecycle_blocks_orders"/>
+                            <field name="lifecycle_blocks_quotes"/>
+	                </field>
+		</notebook>
+                <field name="company_id" position="after">
+                      <button name="button_import_update_product_ntty" type="object" string="Download NTTY Information"/>
+                </field>
+            </field>
+        </record>
+
+
+
+
+        <menuitem id="base.menu_ntty_config" name="NTTY" parent="base.menu_config" groups="base.group_sale_salesman,base.group_sale_manager"/>
+
+        <record model="ir.actions.act_window" id="ntty_config_action">
+            <field name="name">NTTY Config</field>
+            <field name="res_model">ntty.config.settings</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+	    <!-- field name="view_id">view_ntty_config_form</field -->
+        </record>
+
+        <menuitem id="rule_menu" name="NTTY Configuration"
+                  parent="base.menu_ntty_config"
+                  action="ntty_config_action"/>
+
+    </data>
+</openerp>
