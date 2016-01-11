@@ -1,5 +1,5 @@
 {
-    'name': 'NTTY',
+    'name': 'NTTY - Odoo Integration',
     'category': 'Sales',
     'version': '0.1',
     'depends': ['base','product','product_brand'],

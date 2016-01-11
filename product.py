@@ -133,7 +133,6 @@ class product_template(models.Model):
             entity = res['entity']
             part_numbers = res['part_numbers']
 
-	    import pdb;pdb.set_trace()
 	    flag_ul = False
 	    flag_rohs = False
 	    flag_defense = False
