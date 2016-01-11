@@ -1,0 +1,1 @@
+# ntty-odoo-integration
