@@ -7,15 +7,18 @@
 				<form string="Select Supplier">
 					<group>
 						<field name="ntty_id" />
+					</group>
+					<group>
 						<br />
-						<field name="detail_ids" readonly="1">
-							<tree>
-								<field name="partner_id" />
+						<field name="detail_ids" >
+							<tree editable="bottom" delete="false">
+								<field name="partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
 								<field name="selected" />
 							</tree>
 						</field>
-						<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" />
 					</group>
+					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" />
+					<button name="create_ntty_products" type="object" string="Create Products" />
 				</form>
 			</field>
 		</record>
