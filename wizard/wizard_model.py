@@ -28,15 +28,10 @@ class wizard_ntty_product_import(models.TransientModel):
 
 	@api.multi
 	def pull_ntty_suppliers(self):
-		import pdb;pdb.set_trace()
-        	if context is None:
-			context = {}
-		if not context.get('active_id',False):
-			return None
 		ntty_id = self.ntty_id
 		if not ntty_id:
                 	return None
-	        ntty = self.pool.get('ntty.config.settings').browse(cr,uid,1)
+	        ntty = self.env['ntty.config.settings'].browse(1)
 	        if not ntty:
         	        return None
 	        ntty_service_address = ntty.ntty_service_address
@@ -68,14 +63,21 @@ class wizard_ntty_product_import(models.TransientModel):
 			except:
 				suppliers = []
 			for supplier in suppliers:
-				supplier_id = self.pool.get('res.partner').search(cr,uid,[('name','=',supplier['name'])])
+				supplier_id = self.env['res.partner'].search([('name','=',supplier['name'])])
 				if supplier_id:
 					vals_sup = {
 						'import_id': import_id,
-						'partner_id': supplier_id[0],
+						'partner_id': supplier_id[0].id,
 						'selected': False,		
 						}
-					return_id = self.pool.get('wizard.ntty.product.import.detail').create(cr,uid,vals_sup)
-		return True
+					return_id = self.env['wizard.ntty.product.import.detail'].create(vals_sup)
+		# return True
+		return {
+			'type': 'ir.actions.act_window',
+			'res_model': self._name, # this model
+			'res_id': self.id, # the current wizard record
+			'view_type': 'form',
+			'view_mode': 'form',
+			'target': 'new'}
 
 	
