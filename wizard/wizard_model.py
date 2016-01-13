@@ -63,9 +63,9 @@ class wizard_ntty_product_import(models.TransientModel):
 				lifecycle = entity.get('lifecycle',False)
 				product_brand_id = None
 				if product_brand:
-					partner_id = self.env['res.partner'].search([('name','=',product_brand)])
-					if partner_id:
-						product_brand_id = partner_id[0].id
+					product_brand_id = self.env['product.brand'].search([('name','=',product_brand)])
+					if product_brand_id:
+						product_brand_id = product_brand_id[0].id
 					else:
 						unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
 						if unknown_brand:
@@ -119,7 +119,6 @@ class wizard_ntty_product_import(models.TransientModel):
 						print file['url']
 				except KeyError:
 			                files = {}
-
 				vals = {
 		                    'name': article_part_name,
                 		    'article_part_number': article_part_number,
