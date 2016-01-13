@@ -62,6 +62,7 @@ class product_template(models.Model):
     # article_part_number = fields.Char(string="Base Part Number")
     article_part_number = fields.Char(string="Product Owner Reference")
     ntty_id = fields.Char(string="NTTY ID")
+    ntty_odoo = fields.Char(string="NTTY ID/ODOO")
     ntty_url = fields.Char(string="NTTY URL",readonly=True,compute='compute_ntty_url')
     # customer_pn = fields.Char('Customer PartNum')
     panel_factor = fields.Integer('Panel Factor', help="The number of units/PCB's that fit on one panel")
@@ -90,6 +91,21 @@ class product_template(models.Model):
 		_logger.debug('Synchronizing product ' + template.name)
 		template.import_product_ntty(template.ntty_id)
 	_logger.debug('Done synchronizing NTTY with Odoo')
+
+    @api.one
+    def button_import_wizard(self):
+	return {
+	   'name': 'ntty_product_import_wizard',
+	   'views': [('ntty_product_import_wizard','form')],
+	   'view_id': 'launch_ntty_import_product_wizard',
+	   'type': 'ir.actions.act_window',
+	   'res_model': 'wizard.ntty.product.import',
+	   'view_mode': 'form',
+	   'view_type': 'form',
+	   'target': 'new',
+	   'context': {},
+	}
+
 
 
 
@@ -168,12 +184,12 @@ class product_template(models.Model):
 		if partner_id:
 			product_brand_id = partner_id[0].id
 		else:
-			unknown_partner = self.env['res.partner'].search([('ref','=','N/A')])
-			if unknown_partner:
-				product_brand_id = unknown_partner[0].id
+			unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
+			if unknown_brand:
+				product_brand_id = unknown_brand[0].id
 	    else:
-		unknown_partner = self.env['res.partner'].search([('ref','=','N/A')])
-		product_owner_id = unknown_partner.id
+		unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
+		product_brand_id = unknown_brand.id
 
 	    # article_part_number = entity.get('article_part_number','')
 	    article_part_number = entity.get('name','N/A')
@@ -223,7 +239,7 @@ class product_template(models.Model):
 
             
 	    # This is the place
-	    prod = self.env['product.template'].search([('ntty_id', '=', identifier)])
+	    # prod = self.env['product.template'].search([('ntty_id', '=', identifier)])
             vals = {
                     'name': article_part_name,
                     'article_part_number': article_part_number,
@@ -258,26 +274,22 @@ class product_template(models.Model):
 			part_description = part_number.get('part_description','')
 			product_code = part_number.get('part_number','')
 	    		vals['product_code'] = product_code
-	    if not prod:
-		    prod.create(vals)
-	    else:
-		    prod.write(vals)
 	    vals = {
 		'default_code': default_code,
 		'name': article_part_number + ' ' + product_code,
 		'description': part_description,
-		'product_tmpl_id': prod.id,
+		# 'product_tmpl_id': prod.id,
 		}
 		# searches for product with empty default_code
-	    product_id = self.env['product.product'].search([('product_tmpl_id','=',prod.id)])
-	    if not product_id:
-		    product_id = self.env['product.product'].create(vals)
-	    else:
-		    for product in product_id:
-			    product.write(vals)
+	    #product_id = self.env['product.product'].search([('product_tmpl_id','=',prod.id)])
+	    #if not product_id:
+	#	    product_id = self.env['product.product'].create(vals)
+	 #   else:
+	#	    for product in product_id:
+	#		    product.write(vals)
 
-            suppliers = entity['values']['supplier_matching'] #json.loads(str(entity['values']['capable_supplier']).replace("=>",":"))
-            prod.seller_ids.unlink()
+            # suppliers = entity['values']['supplier_matching'] #json.loads(str(entity['values']['capable_supplier']).replace("=>",":"))
+            # prod.seller_ids.unlink()
             try:
                     # suppliers = entity['values']['capable_supplier']
                     suppliers = entity['values']['supplier_matching']
@@ -288,16 +300,23 @@ class product_template(models.Model):
 	                    for supplier in suppliers:
         	                sup_odoo = self.env['res.partner'].search([('supplier', '=', True), ('is_company', '=', True),\
 					 ('ntty_partner_id', '=', supplier['id'])])
-					
 	                        if not sup_odoo:
         	                    sup_odoo = self.env['res.partner'].create({'supplier': True, \
 					'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
 					'partner_approved': True, 'active': True})
+				identifier_odoo = identifier + '#' + str(supplier['id'])
+	    			prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
+				vals['ntty_odoo'] = identifier_odoo
+	    			if not prod:
+					prod = prod.create(vals)
+				else:
+					prod.write(vals)
+					
 				for sup_in_odoo in sup_odoo:
 					vals_supplier = {
 						'name': sup_in_odoo.id,
 						'company_id': 1,
-						'product_tmpl_id': prod.id,	
+						'product_tmpl_id': prod.product_tmpl_id.id,	
 						}
 		                        prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 		    else:
