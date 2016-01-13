@@ -307,6 +307,7 @@ class product_template(models.Model):
 				identifier_odoo = identifier + '#' + str(supplier['id'])
 	    			prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
 				vals['ntty_odoo'] = identifier_odoo
+				vals['ntty_id'] = identifier
 	    			if not prod:
 					prod = prod.create(vals)
 				else:
