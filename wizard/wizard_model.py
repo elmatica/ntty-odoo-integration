@@ -63,7 +63,6 @@ class wizard_ntty_product_import(models.TransientModel):
 				lifecycle_blocks_quotes = entity.get('lifecycle_blocks_quotes',False)
 				lifecycle = entity.get('lifecycle',False)
 				product_brand_id = None
-				import pdb;pdb.set_trace()
 				if product_brand:
 					product_brand_id = self.env['product.brand'].search([('name','=',product_brand)])
 					if product_brand_id:
@@ -160,7 +159,10 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
-			        vals['name'] =  article_part_number + ' ' + product_code
+				if detail.partner_id.short_name:
+				        vals['name'] =  detail.partner_id.short_name + ' ' + article_part_number + ' ' + product_code
+				else:	
+				        vals['name'] =  'XXX' + article_part_number + ' ' + product_code
 			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])

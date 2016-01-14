@@ -25,6 +25,7 @@ class res_partner(models.Model):
     ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
     ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
     mnda = fields.Char(string='MNDA',size=128)
+    short_name = fields.Char(string='Supplier Short Name',size=128)
 
 class product_product(models.Model):
     _inherit = 'product.product'

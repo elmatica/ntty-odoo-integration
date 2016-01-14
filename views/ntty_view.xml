@@ -11,6 +11,7 @@
                 <field name="website" position="after">
                       <field name="ntty_partner_id" />
                       <field name="ntty_url" widget="url"/>
+                      <field name="short_name" />
                 </field>
                 <field name="user_id" position="after">
                         <field name="mnda" />
