@@ -63,6 +63,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				lifecycle_blocks_quotes = entity.get('lifecycle_blocks_quotes',False)
 				lifecycle = entity.get('lifecycle',False)
 				product_brand_id = None
+				import pdb;pdb.set_trace()
 				if product_brand:
 					product_brand_id = self.env['product.brand'].search([('name','=',product_brand)])
 					if product_brand_id:
@@ -158,12 +159,9 @@ class wizard_ntty_product_import(models.TransientModel):
                         			part_description = part_number.get('part_description','')
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
-			        vals = {
-			                'default_code': default_code,
-			                'name': article_part_number + ' ' + product_code,
-			                'description': part_description,
-			                # 'product_tmpl_id': prod.id,
-			                }
+			        vals['default_code'] = default_code
+			        vals['name'] =  article_part_number + ' ' + product_code
+			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
                                 vals['ntty_odoo'] = identifier_odoo
@@ -220,15 +218,21 @@ class wizard_ntty_product_import(models.TransientModel):
 			except:
 				suppliers = []
 			for supplier in suppliers:
-				supplier_id = self.env['res.partner'].search([('name','=',supplier['name'])])
-				if supplier_id:
-					vals_sup = {
-						'import_id': import_id,
-						'partner_id': supplier_id[0].id,
-						'ntty_partner_id': supplier_id[0].ntty_partner_id,
-						'selected': 'no',		
-						}
-					return_id = self.env['wizard.ntty.product.import.detail'].create(vals_sup)
+				supplier_id = self.env['res.partner'].search([('ntty_partner_id','=',supplier['id'])])
+				if not supplier_id:
+					sup_odoo = self.env['res.partner'].create({'supplier': True, \
+                                        	'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
+	                                        'partner_approved': True, 'active': True})
+					supplier_id = sup_odoo.id
+				else:
+					supplier_id = supplier_id.id
+				vals_sup = {
+					'import_id': import_id,
+					'partner_id': supplier_id,
+					'ntty_partner_id': supplier['id'],
+					'selected': 'no',
+					}
+				return_id = self.env['wizard.ntty.product.import.detail'].create(vals_sup)
 		# return True
 		return {
 			'type': 'ir.actions.act_window',
