@@ -13,6 +13,7 @@
 						<field name="detail_ids" >
 							<tree editable="bottom" delete="false">
 								<field name="partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
+								<field name="ntty_partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
 								<field name="selected" />
 							</tree>
 						</field>

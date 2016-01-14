@@ -13,6 +13,7 @@ class wizard_ntty_product_import_detail(models.TransientModel):
 
 	import_id = fields.Many2one('wizard.ntty.product.import')
 	partner_id = fields.Many2one('res.partner')
+	ntty_partner_id = fields.Integer('NTTY Partner ID')
 	selected = fields.Selection([('yes','yes'),('no','no')],string="Import",default='no')
 
 class wizard_ntty_product_import(models.TransientModel):
@@ -224,6 +225,7 @@ class wizard_ntty_product_import(models.TransientModel):
 					vals_sup = {
 						'import_id': import_id,
 						'partner_id': supplier_id[0].id,
+						'ntty_partner_id': supplier_id[0].ntty_partner_id,
 						'selected': 'no',		
 						}
 					return_id = self.env['wizard.ntty.product.import.detail'].create(vals_sup)
