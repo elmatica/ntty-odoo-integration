@@ -69,10 +69,10 @@
                             <field name="lifecycle_blocks_quotes"/>
 	                </field>
 		</notebook>
-                <field name="company_id" position="after">
+                <!-- field name="company_id" position="after">
                       <button name="button_import_update_product_ntty" type="object" string="Download NTTY Information"/>
                       <button name="button_import_wizard" type="object" string="Download Wizard"/>
-                </field>
+                </field -->
             </field>
         </record>
 
