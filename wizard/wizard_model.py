@@ -1,5 +1,6 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm
+from openerp.osv import osv
 import urllib2, httplib, urlparse, gzip, requests, json
 from StringIO import StringIO
 import openerp.addons.decimal_precision as dp
@@ -25,6 +26,9 @@ class wizard_ntty_product_import(models.TransientModel):
 
 	@api.multi
 	def create_ntty_products(self):
+		if len(self.detail_ids) == 0:
+			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
+                	return None
 		ntty_data = self.ntty_data
 		identifier = self.ntty_id
         	res = ast.literal_eval(self.ntty_data)
@@ -186,6 +190,7 @@ class wizard_ntty_product_import(models.TransientModel):
 	def pull_ntty_suppliers(self):
 		ntty_id = self.ntty_id
 		if not ntty_id:
+			raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                 	return None
 	        ntty = self.env['ntty.config.settings'].browse(1)
 	        if not ntty:

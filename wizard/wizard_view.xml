@@ -19,7 +19,8 @@
 						</field>
 					</group>
 					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" />
-					<button name="create_ntty_products" type="object" string="Create Products" />
+					<button name="create_ntty_products" type="object" string="Create Products" 
+						attrs="{'invisible':[('detail_ids', '==', False)]}" />
 				</form>
 			</field>
 		</record>
