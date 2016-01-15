@@ -11,22 +11,6 @@ _logger = logging.getLogger(__name__)
 USER_AGENT = 'OpenAnything/1.0 +http://diveintopython.org/http_web_services/'
 
 
-class res_partner(models.Model):
-    _inherit = 'res.partner'
-
-    @api.one
-    def _compute_ntty_url(self):
-	url = ''
-	system_param = self.env['ir.config_parameter'].search([('key','=','ntty_partner_viewing_address')])
-	if system_param:
-		url = system_param.value + str(self.ntty_partner_id)
-	self.ntty_url = url
-
-    ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
-    ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
-    mnda = fields.Char(string='MNDA',size=128)
-    short_name = fields.Char(string='Supplier Short Name',size=128)
-
 class product_product(models.Model):
     _inherit = 'product.product'
 
@@ -86,7 +70,6 @@ class product_template(models.Model):
 
     @api.model
     def _scheduled_connect_odoo_ntty(self):
-	import pdb;pdb.set_trace()
 	templates = self.env['product.template'].search([('ntty_id','!=','')])
 	_logger.debug('Synchronizing with NTTY')
 
@@ -118,7 +101,6 @@ class product_template(models.Model):
         req = urllib2.Request(request_string)
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
-	import pdb;pdb.set_trace()
         try:
             resp = urllib2.urlopen(req)
         except StandardError:
