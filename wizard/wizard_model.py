@@ -67,13 +67,13 @@ class wizard_ntty_product_import(models.TransientModel):
 					product_brand_id = self.env['product.brand'].search([('name','=',product_brand)])
 					if product_brand_id:
 						product_brand_id = product_brand_id[0].id
-					else:
-						unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-						if unknown_brand:
-							product_brand_id = unknown_brand[0].id
-						else:
-							unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-							product_brand_id = unknown_brand.id
+					#else:
+					#	unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
+					#	if unknown_brand:
+					#		product_brand_id = unknown_brand[0].id
+					#	else:
+					#		unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
+					#		product_brand_id = unknown_brand.id
 
 			        # article_part_number = entity.get('article_part_number','')
 			        article_part_number = entity.get('name','N/A')
