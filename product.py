@@ -85,6 +85,59 @@ class product_template(models.Model):
     lifecycle = fields.Char('Lifecycle')
 
     @api.model
+    def _scheduled_connect_odoo_ntty(self):
+	import pdb;pdb.set_trace()
+	templates = self.env['product.template'].search([('ntty_id','!=','')])
+	_logger.debug('Synchronizing with NTTY')
+
+	templates_list = []	
+	for template in templates:
+		#http://www.ntty.com/api/v1/lifecycle?entities=["entity.identifier1", "entity_identifier2"]
+		#http://www.ntty.com/api/v1/lifecycle?entities=["1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c", "1ee966fd8d1b116a1a971b499c"]'
+
+		if str(template.ntty_id) not in templates_list:
+			templates_list.append(str(template.ntty_id))
+	if not templates:
+		_logger.debug('No entities to synchronize')
+		return None
+	templates_string = str(templates_list)
+	templates_string = templates_string.replace("'","\"")
+
+	ntty = self.env['ntty.config.settings'].browse(1)
+	if not ntty:
+		return None
+        ntty_service_address = ntty['ntty_service_address']
+        ntty_service_user_email = ntty['ntty_service_user_email']
+        ntty_service_token = ntty['ntty_service_token']
+
+        httplib.HTTPConnection._http_vsn = 10
+        httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+
+	request_string = str(ntty_service_address) + "lifecycle?entities=" + templates_string
+	
+        req = urllib2.Request(request_string)
+        req.add_header('X-User-Email', str(ntty_service_user_email))
+        req.add_header('X-User-Token', str(ntty_service_token))
+	import pdb;pdb.set_trace()
+        try:
+            resp = urllib2.urlopen(req)
+        except StandardError:
+            raise except_orm(_('Warning'), _("Error connecting to NTTY."))
+            return False
+
+        if not resp.code == 200 and resp.msg == "OK":
+            raise except_orm(_('Warning'), _("Unable to connect to NTTY."))
+            return {}
+
+        content = resp.read()
+
+        res = json.loads(content)
+
+        #if len(res) > 0:
+	#	template.import_product_ntty(template.ntty_id)
+	_logger.debug('Done synchronizing NTTY with Odoo')
+
+    @api.model
     def _connect_odoo_ntty(self):
 	templates = self.search([('ntty_id','!=','')])
 	_logger.debug('Synchronizing with NTTY')
