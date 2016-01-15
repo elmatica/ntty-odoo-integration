@@ -160,9 +160,9 @@ class wizard_ntty_product_import(models.TransientModel):
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
 				if detail.partner_id.short_name:
-				        vals['name'] =  detail.partner_id.short_name + ' ' + article_part_number + ' ' + product_code
+				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
 				else:	
-				        vals['name'] =  'XXX' + article_part_number + ' ' + product_code
+				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name
 			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
@@ -226,8 +226,11 @@ class wizard_ntty_product_import(models.TransientModel):
                                         	'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
 	                                        'partner_approved': True, 'active': True})
 					supplier_id = sup_odoo.id
-				else:
-					supplier_id = supplier_id.id
+				else:	
+					if len(supplier_id) > 1:
+						supplier_id = supplier_id[0].id
+					else:
+						supplier_id = supplier_id.id
 				vals_sup = {
 					'import_id': import_id,
 					'partner_id': supplier_id,
