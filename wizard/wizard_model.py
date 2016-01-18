@@ -184,6 +184,11 @@ class wizard_ntty_product_import(models.TransientModel):
                                                 }
                                 prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 
+		for detail in self.detail_ids:
+			if detail.selected == 'no':
+				prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id)])
+				if not prod_sup:
+					self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
 		return True
 
 	@api.multi

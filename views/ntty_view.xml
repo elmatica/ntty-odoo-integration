@@ -74,9 +74,29 @@
                       <button name="button_import_update_product_ntty" type="object" string="Download NTTY Information"/>
                       <button name="button_import_wizard" type="object" string="Download Wizard"/>
                 </field -->
+
             </field>
         </record>
 
+
+        <!-- Product Product Form -->
+
+        <record id="product_replacement_product_ntty_form_view" model="ir.ui.view">
+            <field name="name">product.replacement.product.ntty.form.view</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product_lifecycle.product_replacement_product_form_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='Information']" position="inside">
+                    <group string="Replacements Info">
+                        <field name="replaced_by_product_id"/>
+                        <field name="replace_to_product_id" widget="many2many_tags" readonly="1"/>
+                    </group>
+                </xpath>
+                <xpath expr="//page[@string='Information']/group[@string='Replacements Info']" position="attributes">
+			<attribute name="invisible">1</attribute>
+		</xpath>
+            </field>
+        </record>
 
 
 
