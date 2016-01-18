@@ -6,18 +6,17 @@
 			<field name="arch" type="xml">
 				<form string="Select Supplier">
 					<group>
-						<field name="ntty_id" />
+						<field name="ntty_id" style="width:40%%"/>
 					</group>
-					<group>
-						<br />
-						<field name="detail_ids" >
-							<tree editable="bottom" delete="false">
-								<field name="partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
-								<field name="ntty_partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
-								<field name="selected" />
-							</tree>
-						</field>
-					</group>
+					<h3>Please select suppliers to import</h3>
+					<field name="detail_ids" >
+						<tree editable="bottom" delete="false" create="false"
+							string="Please select suppliers to import">
+							<field name="partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
+							<field name="ntty_partner_id" attrs="{'readonly':[('partner_id','!=',0)]}"/>
+							<field name="selected" />
+						</tree>
+					</field>
 					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" />
 					<button name="create_ntty_products" type="object" string="Create Products" 
 						attrs="{'invisible':[('detail_ids', '==', False)]}" />
