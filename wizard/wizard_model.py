@@ -129,7 +129,7 @@ class wizard_ntty_product_import(models.TransientModel):
                 		    'article_part_number': article_part_number,
 		                    'description': long_description,
 		                    'ntty_id': identifier,
-                		    'type': "consu",
+                		    'type': "product",
 		                    'panel_factor': panel_factor,
                 		    'panel_weight': panel_weight,
 		                    'panel_width': panel_width,
