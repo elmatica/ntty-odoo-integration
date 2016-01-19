@@ -71,13 +71,12 @@ class wizard_ntty_product_import(models.TransientModel):
 					product_brand_id = self.env['product.brand'].search([('name','=',product_brand)])
 					if product_brand_id:
 						product_brand_id = product_brand_id[0].id
-					#else:
-					#	unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-					#	if unknown_brand:
-					#		product_brand_id = unknown_brand[0].id
-					#	else:
-					#		unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-					#		product_brand_id = unknown_brand.id
+					else:
+						vals_brand = {
+							'name': product_brand
+							}
+						product_brand_id = self.env['product.brand'].create(vals_brand)
+						product_brand_id = product_brand_id.id
 
 			        # article_part_number = entity.get('article_part_number','')
 			        article_part_number = entity.get('name','N/A')
@@ -192,6 +191,9 @@ class wizard_ntty_product_import(models.TransientModel):
 						self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
 					except:
 						pass
+			else:
+				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
+	
 		return True
 
 	@api.multi
@@ -238,6 +240,7 @@ class wizard_ntty_product_import(models.TransientModel):
 					sup_odoo = self.env['res.partner'].create({'supplier': True, \
                                         	'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
 	                                        'partner_approved': True, 'active': True})
+					# sup_odoo.message_post(body="Supplier created. Needs setup", context={})
 					supplier_id = sup_odoo.id
 				else:	
 					if len(supplier_id) > 1:
