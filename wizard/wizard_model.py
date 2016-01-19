@@ -1,5 +1,6 @@
 from openerp import models, fields, api, _
 from openerp.exceptions import except_orm
+from openerp.osv import osv
 import urllib2, httplib, urlparse, gzip, requests, json
 from StringIO import StringIO
 import openerp.addons.decimal_precision as dp
@@ -25,6 +26,9 @@ class wizard_ntty_product_import(models.TransientModel):
 
 	@api.multi
 	def create_ntty_products(self):
+		if len(self.detail_ids) == 0:
+			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
+                	return None
 		ntty_data = self.ntty_data
 		identifier = self.ntty_id
         	res = ast.literal_eval(self.ntty_data)
@@ -68,12 +72,11 @@ class wizard_ntty_product_import(models.TransientModel):
 					if product_brand_id:
 						product_brand_id = product_brand_id[0].id
 					else:
-						unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-						if unknown_brand:
-							product_brand_id = unknown_brand[0].id
-						else:
-							unknown_brand = self.env['product.brand'].search([('name','=','N/A')])
-							product_brand_id = unknown_brand.id
+						vals_brand = {
+							'name': product_brand
+							}
+						product_brand_id = self.env['product.brand'].create(vals_brand)
+						product_brand_id = product_brand_id.id
 
 			        # article_part_number = entity.get('article_part_number','')
 			        article_part_number = entity.get('name','N/A')
@@ -125,7 +128,7 @@ class wizard_ntty_product_import(models.TransientModel):
                 		    'article_part_number': article_part_number,
 		                    'description': long_description,
 		                    'ntty_id': identifier,
-                		    'type': "consu",
+                		    'type': "product",
 		                    'panel_factor': panel_factor,
                 		    'panel_weight': panel_weight,
 		                    'panel_width': panel_width,
@@ -160,9 +163,9 @@ class wizard_ntty_product_import(models.TransientModel):
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
 				if detail.partner_id.short_name:
-				        vals['name'] =  detail.partner_id.short_name + ' ' + article_part_number + ' ' + product_code
+				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
 				else:	
-				        vals['name'] =  'XXX' + article_part_number + ' ' + product_code
+				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name
 			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
@@ -180,12 +183,24 @@ class wizard_ntty_product_import(models.TransientModel):
                                                 }
                                 prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 
+		for detail in self.detail_ids:
+			if detail.selected == 'no':
+				prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id)])
+				if not prod_sup:
+					try:
+						self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
+					except:
+						pass
+			else:
+				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
+	
 		return True
 
 	@api.multi
 	def pull_ntty_suppliers(self):
 		ntty_id = self.ntty_id
 		if not ntty_id:
+			raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                 	return None
 	        ntty = self.env['ntty.config.settings'].browse(1)
 	        if not ntty:
@@ -225,9 +240,13 @@ class wizard_ntty_product_import(models.TransientModel):
 					sup_odoo = self.env['res.partner'].create({'supplier': True, \
                                         	'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
 	                                        'partner_approved': True, 'active': True})
+					# sup_odoo.message_post(body="Supplier created. Needs setup", context={})
 					supplier_id = sup_odoo.id
-				else:
-					supplier_id = supplier_id.id
+				else:	
+					if len(supplier_id) > 1:
+						supplier_id = supplier_id[0].id
+					else:
+						supplier_id = supplier_id.id
 				vals_sup = {
 					'import_id': import_id,
 					'partner_id': supplier_id,

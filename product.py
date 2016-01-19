@@ -134,6 +134,7 @@ class product_template(models.Model):
         ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
 	        return None
+
         ntty_service_address = ntty['ntty_service_address']
         ntty_service_address = ntty_service_address.replace("http:","https:")
         ntty_service_user_email = ntty['ntty_service_user_email']
@@ -147,7 +148,7 @@ class product_template(models.Model):
         req = urllib2.Request(request_string)
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
-        import pdb;pdb.set_trace()
+
         try:
             resp = urllib2.urlopen(req)
         except StandardError:
