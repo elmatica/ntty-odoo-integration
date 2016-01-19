@@ -2,6 +2,7 @@ Odoo NTTY
 ---------
 
 Handle your produtcs with ease, by integrating with <a href="https://www.ntty.com">NTTY, where your produtcs live</a>
+
 <a href="https://www.odoo.com/page/ntty">Open Source NTTY Module</a>.
 
 Import entties and transform them into products. Use the settings to define
