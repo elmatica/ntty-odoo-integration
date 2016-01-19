@@ -37,9 +37,9 @@ NTTY Configuration
 
 Since entity retrieval will be done thorugh API calls to NTTY, we need configure
 the connection. You will be required to enter:
-- Ntty service address: ** http://www.ntty.com/api/v1/ **
-- NTTY service user email: ** email address of the NTTY user ** 
-- NTTY service token: ** the authorization token of the NTTY user ** 
+- Ntty service address: *http://www.ntty.com/api/v1/*
+- NTTY service user email: *email address of the NTTY user*
+- NTTY service token: *the authorization token of the NTTY user*
 
 User specific settings
 ----------------------
