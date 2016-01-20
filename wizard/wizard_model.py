@@ -149,6 +149,7 @@ class wizard_ntty_product_import(models.TransientModel):
 			        product_code = ''
 		                part_name = ''
 		                part_description = ''
+				default_code = ''
 
 			        # This is the place
 			        # prod = self.env['product.template'].search([('ntty_id', '=', identifier)])
