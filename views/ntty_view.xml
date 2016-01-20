@@ -8,6 +8,7 @@
             <field name="model">res.partner</field>
             <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
+            <!--
                 <field name="website" position="after">
                       <field name="ntty_partner_id" />
                       <field name="ntty_url" widget="url"/>
@@ -16,6 +17,23 @@
                 <field name="user_id" position="after">
                         <field name="mnda" />
                 </field>
+            -->
+                <notebook>
+                    <page string="NTTY">
+                        <group name="Information">
+                                <field name="ntty_partner_id" string="NTTY ID"/>
+                                <field name="ntty_url" widget="url" string="NTTY Url"/>
+                                <field name="short_name" string="Short Name"/>
+                                <field name="mnda" string="Mnda"/>
+
+                                <field name="ntty_country_code" string="NTTY country code"/>
+                                <field name="verificationstate" string="NTTY verification state"/>
+                                <field name="company_number" string="NTTY company number"/>
+                                <field name="jurisdiction_code" string="NTTY jurisdiction code"/>
+                                <field name="organization_type" string="NTTY organization type"/>
+                        </group>
+                    </page>
+                </notebook>
             </field>
         </record>
 

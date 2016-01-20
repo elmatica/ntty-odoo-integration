@@ -116,7 +116,7 @@ class product_template(models.Model):
         }
 
         templates = self.env['product.template'].search([('ntty_id','!=','')])
-        _logger.info('Synchronizing with NTTY')
+        _logger.info('Synchronizing products with NTTY')
 
         templates_list = []
         for template in templates:
