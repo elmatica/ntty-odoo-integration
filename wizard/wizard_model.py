@@ -87,6 +87,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				article_id = entity.get('article_id','')
 				panel_factor = int(entity['values'].get('panel_units',entity['values'].get('units',1)))
 
+
 				try:
 					panel_weight = float(entity['values']['weight_calculation_panel'][0]['panel_weight'])
 				except KeyError:
@@ -149,6 +150,7 @@ class wizard_ntty_product_import(models.TransientModel):
 			        product_code = ''
 		                part_name = ''
 		                part_description = ''
+				default_code = ''
 
 			        # This is the place
 			        # prod = self.env['product.template'].search([('ntty_id', '=', identifier)])
@@ -182,6 +184,30 @@ class wizard_ntty_product_import(models.TransientModel):
                                                 'product_tmpl_id': prod.product_tmpl_id.id,
                                                 }
                                 prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
+				# Creates attributes
+				for entity_values_key in entity['values'].keys():
+					value = entity['values'][entity_values_key]
+					attribute_id = self.env['product.attribute'].search([('name','=',entity_values_key)])
+					if attribute_id:
+						value_id = self.env['product.attribute.value'].\
+							search([('attribute_id','=',attribute_id.id),\
+								('name','=',value)])
+						if not value_id:
+							vals_value = {
+								'attribute_id': attribute_id.id,
+								'name': value
+								}
+							value_id = self.env['product.attribute.value'].create(vals_value)
+							value_id = value_id.id
+						else:
+							value_id = value_id.id
+						vals_attribute_line = {
+							'product_tmpl_id': prod.product_tmpl_id.id,
+							'attribute_id': attribute_id.id,
+							'value_ids': [(6,0,[value_id])]
+							}
+						attribute_line_id = self.env['product.attribute.line'].\
+							create(vals_attribute_line)
 
 		for detail in self.detail_ids:
 			if detail.selected == 'no':
