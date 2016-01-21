@@ -208,19 +208,23 @@ class wizard_ntty_product_import(models.TransientModel):
 							}
 						attribute_line_id = self.env['product.attribute.line'].\
 							create(vals_attribute_line)
-		"""
+		
 		for detail in self.detail_ids:
 			if detail.selected == 'no' and detail.partner_id:
 				prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id)])
-				if not prod_sup:
+				po_sup = self.env['purchase.order'].search([('partner_id','=',detail.partner_id.id)])
+				inv_sup = self.env['account.invoice'].search([('partner_id','=',detail.partner_id.id)])
+				so_sup = self.env['sale.order'].search(['|',('partner_invoice_id','=',detail.partner_id.id),\
+										('partner_id','=',detail.partner_id.id)])
+				if not prod_sup and not po_sup and not inv_sup and not so_sup:
+					supplier_to_delete = detail.partner_id
 					try:
-						
-						self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
+						supplier_to_delete.unlink()
 					except:
 						pass
 			else:
 				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
-		"""
+		
 		return True
 
 	@api.multi
