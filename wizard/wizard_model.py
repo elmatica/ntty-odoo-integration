@@ -191,11 +191,11 @@ class wizard_ntty_product_import(models.TransientModel):
 					if attribute_id:
 						value_id = self.env['product.attribute.value'].\
 							search([('attribute_id','=',attribute_id.id),\
-								('name','=',value)])
+								('name','=',str(value))])
 						if not value_id:
 							vals_value = {
 								'attribute_id': attribute_id.id,
-								'name': value
+								'name': str(value),
 								}
 							value_id = self.env['product.attribute.value'].create(vals_value)
 							value_id = value_id.id
@@ -208,18 +208,19 @@ class wizard_ntty_product_import(models.TransientModel):
 							}
 						attribute_line_id = self.env['product.attribute.line'].\
 							create(vals_attribute_line)
-
+		"""
 		for detail in self.detail_ids:
-			if detail.selected == 'no':
+			if detail.selected == 'no' and detail.partner_id:
 				prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id)])
 				if not prod_sup:
 					try:
+						
 						self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
 					except:
 						pass
 			else:
 				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
-	
+		"""
 		return True
 
 	@api.multi
@@ -289,4 +290,4 @@ class wizard_ntty_product_import(models.TransientModel):
 			'view_mode': 'form',
 			'target': 'new'}
 
-	
+

@@ -22,10 +22,20 @@ class res_partner(models.Model):
             url = system_param.value + str(self.ntty_partner_id)
         self.ntty_url = url
 
-        ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
-        ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
-        mnda = fields.Char(string='MNDA',size=128)
-        short_name = fields.Char(string='Supplier Short Name',size=128)
+    ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
+    ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
+    mnda = fields.Char(string='MNDA',size=128)
+    short_name = fields.Char(string='Supplier Short Name',size=128)
+
+    @api.onchange('short_name')
+    def update_product_name(self):
+	supplier = self.env['res.partner'].search([('ntty_partner_id','=',self.ntty_partner_id)])
+        if supplier:
+	    prod_suppliers = self.env['product.supplierinfo'].search([('name','=',supplier.id)])
+	    for prod_sup in prod_suppliers:
+                prod_template = prod_sup.product_tmpl_id
+                new_name = prod_template.article_part_number + ' ' + prod_template.product_code + ' ' +  self.short_name
+                prod_template.write({'name': new_name})
 
 class product_product(models.Model):
     _inherit = 'product.product'
