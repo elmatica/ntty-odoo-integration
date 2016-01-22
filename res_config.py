@@ -11,6 +11,14 @@ class ntty_config_settings(models.Model):
 	ntty_service_address = fields.Char(String="Service Address", store=True)
 	ntty_service_user_email = fields.Char(String="Service User Email", store=True)
 	ntty_service_token = fields.Char(String="Service Token", store=True)
+	ntty_check_supliers = fields.Boolean(string='Check Suppliers',default=True)
+	ntty_generate_price_list = fields.Boolean(string='Generate PriceList',default=True)
+	ntty_requirements = fields.Boolean(string='Include Requirements',default=True)
+	ntty_related_products = fields.Boolean(string='Include Related Products',default=True)
+	ntty_partner_info = fields.Boolean(string='Include Partner Information',default=True)
+	ntty_product_category = fields.Boolean(string='Include Product Category',default=True)
+	ntty_supplier_short_name = fields.Boolean(string='Include Supplier Short Name',default=True)
+	ntty_update_lifecycle_manually = fields.Boolean(string='Update Lifecycle Manually',default=True)
 	#ntty_service_type = fields.Char(String="Export type", default='odoo_export', store=True)
 
 	"""

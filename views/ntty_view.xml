@@ -43,10 +43,22 @@
             <field name="model">ntty.config.settings</field>
             <field name="arch" type="xml">
 		<form string="NTTY Configuration">
-			<group>
+			<group string="Connection">
 	                        <field name="ntty_service_address" />
         	                <field name="ntty_service_user_email" />
                 	        <field name="ntty_service_token" />
+			</group>
+			<group string="Product">
+		        	<field name="ntty_check_supliers" /> 
+        			<field name="ntty_generate_price_list" />
+        			<field name="ntty_requirements" />
+        			<field name="ntty_related_products" />
+        			<field name="ntty_partner_info" />
+        			<field name="ntty_product_category" />
+        			<field name="ntty_supplier_short_name" />
+			</group>
+			<group string="Lifecycle">
+        			<field name="ntty_update_lifecycle_manually" />
 			</group>
 		</form>
             </field>
