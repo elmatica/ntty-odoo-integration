@@ -48,18 +48,30 @@
         	                <field name="ntty_service_user_email" />
                 	        <field name="ntty_service_token" />
 			</group>
-			<group string="Product">
-		        	<field name="ntty_check_supliers" /> 
-        			<field name="ntty_generate_price_list" />
-        			<field name="ntty_requirements" />
-        			<field name="ntty_related_products" />
-        			<field name="ntty_partner_info" />
-        			<field name="ntty_product_category" />
-        			<field name="ntty_supplier_short_name" />
-			</group>
-			<group string="Lifecycle">
-        			<field name="ntty_update_lifecycle_manually" />
-			</group>
+			<notebook>
+				<page string="Product settings">
+					<group string="Product">
+				        	<field name="ntty_check_supliers" /> 
+        					<field name="ntty_generate_price_list" />
+	        				<field name="ntty_requirements" />
+	        				<field name="ntty_related_products" />
+        					<field name="ntty_partner_info" />
+        					<field name="ntty_product_category" />
+        					<field name="ntty_supplier_short_name" />
+					</group>
+					<group string="Lifecycle">
+        					<field name="ntty_update_lifecycle_manually" />
+					</group>
+				</page>
+				<page string="Lifecycle mappings">
+					<field name="ntty_lifecycle_ids">
+						<tree string="Lifecycle mappings" editable="bottom">
+							<field name="name" />
+							<field name="state2" />
+						</tree>
+					</field>
+				</page>
+			</notebook>
 		</form>
             </field>
         </record>

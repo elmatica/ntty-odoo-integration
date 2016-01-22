@@ -5,6 +5,15 @@ from StringIO import StringIO
 
 USER_AGENT = 'OpenAnything/1.0 +http://diveintopython.org/http_web_services/'
 
+class ntty_lifecycle_mapping(models.Model):
+	_name = 'ntty.lifecycle.mapping'
+
+	ntty_id = fields.Many2one('ntty.config.settings')
+	name = fields.Char('Value in NTTY')
+	state2 = fields.Selection([('draft', 'In Development'),('sellable', 'Normal'),('end', 'End of Lifecycle'),('obsolete', 'Obsolete')], default='draft', string='State', copy=False)
+
+	
+
 class ntty_config_settings(models.Model):
 	_name = 'ntty.config.settings'
 
@@ -19,6 +28,7 @@ class ntty_config_settings(models.Model):
 	ntty_product_category = fields.Boolean(string='Include Product Category',default=True)
 	ntty_supplier_short_name = fields.Boolean(string='Include Supplier Short Name',default=True)
 	ntty_update_lifecycle_manually = fields.Boolean(string='Update Lifecycle Manually',default=True)
+	ntty_lifecycle_ids = fields.One2many(comodel_name='ntty.lifecycle.mapping',inverse_name='ntty_id')
 	#ntty_service_type = fields.Char(String="Export type", default='odoo_export', store=True)
 
 	"""
