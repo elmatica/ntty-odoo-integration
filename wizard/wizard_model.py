@@ -29,6 +29,27 @@ class wizard_ntty_product_import(models.TransientModel):
 		if len(self.detail_ids) == 0:
 			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
                 	return None
+                ntty_id = self.ntty_id
+                if not ntty_id:
+                        raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
+                        return None
+
+                ntty = self.env['ntty.config.settings'].browse(1)
+                if not ntty:
+                        return None
+                ntty_service_address = ntty.ntty_service_address
+                ntty_service_user_email = ntty.ntty_service_user_email
+                ntty_service_token = ntty.ntty_service_token
+
+		ntty_check_supliers = ntty.ntty_check_supliers
+		ntty_generate_price_list = ntty.ntty_generate_price_list
+		ntty_requirements = ntty.ntty_requirements
+		ntty_related_products = ntty.ntty_related_products
+		ntty_partner_info = ntty.ntty_partner_info
+		ntty_product_category = ntty.ntty_product_category
+		ntty_supplier_short_name = ntty.ntty_supplier_short_name
+		ntty_update_lifecycle_manually = ntty.ntty_update_lifecycle_manually
+
 		ntty_data = self.ntty_data
 		identifier = self.ntty_id
         	res = ast.literal_eval(self.ntty_data)
@@ -44,22 +65,22 @@ class wizard_ntty_product_import(models.TransientModel):
 				flag_automotive = False
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
-				if certifications:
-			                for certification in certifications:
-                        			if certification['id'] == 131:
-			                                flag_rohs = True
+				if certifications and ntty_requirements:
+		                	for certification in certifications:
+                       				if certification['id'] == 131:
+		                                	flag_rohs = True
                         			if certification['id'] == 132:
 			                                flag_ul = True
-                        			if 'Automotive' in certification['name']:
+               	        			if 'Automotive' in certification['name']:
 			                                flag_automotive = True
-                        			        category_id = self.env['product.category'].search([('name','=','Automotive')])
-			                                if category_id:
-                        			                categ_id = category_id.id
+                       				        category_id = self.env['product.category'].search([('name','=','Automotive')])
+		                	                if category_id:
+                       				                categ_id = category_id.id
 			                        if 'Defense' in certification['name']:
-                        			        flag_defense = True
+       	                			        flag_defense = True
 			                                category_id = self.env['product.category'].search([('name','=','Defense')])
-                        			        if category_id:
-			                                        categ_id = category_id.id
+                       				        if category_id:
+		        	                                categ_id = category_id.id
 		   	        # Searches for product_owner
 			        product_brand = entity.get('product_owner','')
 			        product_brand_text = entity.get('product_owner','')
@@ -164,7 +185,7 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
-				if detail.partner_id.short_name:
+				if detail.partner_id.short_name and ntty_supplier_short_name:
 				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
 				else:	
 				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name
@@ -178,12 +199,14 @@ class wizard_ntty_product_import(models.TransientModel):
                                 else:
                                         prod.write(vals)
 
-                                vals_supplier = {
-                                         	'name': detail.partner_id.id,
+				# Check suppliers setting
+				if ntty_check_supliers:
+	                                vals_supplier = {
+       	                                	'name': detail.partner_id.id,
                                                 'company_id': 1,
-                                                'product_tmpl_id': prod.product_tmpl_id.id,
+	                                        'product_tmpl_id': prod.product_tmpl_id.id,
                                                 }
-                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
+	                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 				# Creates attributes
 				for entity_values_key in entity['values'].keys():
 					value = entity['values'][entity_values_key]
@@ -224,7 +247,16 @@ class wizard_ntty_product_import(models.TransientModel):
 						pass
 			else:
 				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
-		
+
+		if ntty_related_products:
+			related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
+			related = [related_product.product_tmpl_id.id for related_product in related_products \
+				if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
+			vals = {
+				'alternative_product_ids': [(6,0,related)],
+				}
+			product_template = prod.product_tmpl_id
+			product_template.write(vals)
 		return True
 
 	@api.multi
