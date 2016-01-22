@@ -180,14 +180,21 @@ class product_template(models.Model):
         imap = mapp[ lifecycle_stage ]
         _logger.info('Mapping NTTY to Lifecycle imap[]:' + str(imap) )
         outvalue = ""
-        if imap<=10:
-            outvalue = "draft"
-        elif imap<=22:
-            outvalue = "sellable"
-        elif imap<=24:
-            outvalue = "end"
-        elif imap<=26:
-            outvalue = "obsolete"
+	lifecycle_mapping = self.env['ntty.lifecycle.mapping'].search([('ntty_id','=',ntty.id),('name','=',str(imap))])
+	if lifecycle_mapping:
+		outvalue = lifecycle_mapping.state2
+	else:
+            raise except_orm(_('Warning'), _("Can not map lifecycle."))
+            return {}
+
+        #if imap<=10:
+        #    outvalue = "draft"
+        #elif imap<=22:
+        #    outvalue = "sellable"
+        #elif imap<=24:
+        #    outvalue = "end"
+        #elif imap<=26:
+        #    outvalue = "obsolete"
 
         _logger.info('Mapping NTTY to Lifecycle:' + str(outvalue) )
         templates = self.env['product.template'].search([('ntty_id','=',lifecycle_ntty_id)])
