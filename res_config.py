@@ -10,6 +10,7 @@ class ntty_lifecycle_mapping(models.Model):
 
 	ntty_id = fields.Many2one('ntty.config.settings')
 	name = fields.Char('Value in NTTY')
+	description = fields.Char('Description in NTTY')
 	state2 = fields.Selection([('draft', 'In Development'),('sellable', 'Normal'),('end', 'End of Lifecycle'),('obsolete', 'Obsolete')], default='draft', string='State', copy=False)
 
 	
