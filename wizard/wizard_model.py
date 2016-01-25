@@ -26,9 +26,6 @@ class wizard_ntty_product_import(models.TransientModel):
 
 	@api.multi
 	def create_ntty_products(self):
-		if len(self.detail_ids) == 0:
-			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
-                	return None
                 ntty_id = self.ntty_id
                 if not ntty_id:
                         raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
@@ -49,9 +46,42 @@ class wizard_ntty_product_import(models.TransientModel):
 		ntty_supplier_short_name = ntty.ntty_supplier_short_name
 		ntty_update_lifecycle_manually = ntty.ntty_update_lifecycle_manually
 
-		ntty_data = self.ntty_data
+		if len(self.detail_ids) == 0 and ntty_check_supliers:
+			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
+                	return None
+
 		identifier = self.ntty_id
-        	res = ast.literal_eval(self.ntty_data)
+		ntty_data = self.ntty_data
+		if not ntty_data:
+
+	                httplib.HTTPConnection._http_vsn = 10
+        	        httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+
+                	req = urllib2.Request(str(ntty_service_address) + "/entities/" + str(ntty_id))
+	                req.add_header('X-User-Email', str(ntty_service_user_email))
+        	        req.add_header('X-User-Token', str(ntty_service_token))
+                	try:
+	                    resp = urllib2.urlopen(req)
+        	        except StandardError:
+                	    raise except_orm(_('Warning'), _("Error connecting to NTTY."))
+	                    return False
+
+        	        if not resp.code == 200 and resp.msg == "OK":
+                	    raise except_orm(_('Warning'), _("Unable to connect to NTTY."))
+	                    return {}
+
+        	        content = resp.read()
+                	res = json.loads(content)
+		else:
+			identifier = self.ntty_id
+	        	res = ast.literal_eval(self.ntty_data)
+		if not ntty_check_supliers:
+			vals_detail = {
+				'import_id': self.id,
+				'ntty_partner_id': -999,
+				'selected': 'yes'
+				}
+			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
 
@@ -184,10 +214,13 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
-				if detail.partner_id.short_name and ntty_supplier_short_name:
+				if detail.partner_id.short_name and ntty_supplier_short_name and ntty_check_supliers:
 				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
-				else:	
-				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name
+				else:
+					if detail.partner_id.name:	
+					        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name 
+					else:
+					        vals['name'] =  article_part_number + ' ' + product_code 
 			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
@@ -245,7 +278,8 @@ class wizard_ntty_product_import(models.TransientModel):
 					except:
 						pass
 			else:
-				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
+				if detail.ntty_partner_id != -999:
+					detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
 
 		if ntty_related_products:
 			related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
@@ -291,6 +325,15 @@ class wizard_ntty_product_import(models.TransientModel):
         	res = json.loads(content)
 		self.write({'ntty_data':res})
 		if res:
+			if not ntty.ntty_check_supliers:
+			                return {
+	        		                'type': 'ir.actions.act_window',
+        	                		'res_model': self._name, # this model
+			                        'res_id': self.id, # the current wizard record
+			                        'view_type': 'form',
+                        			'view_mode': 'form',
+			                        'target': 'new'}
+
 			import_id = self.id
 			try:
 				suppliers = res['entity']['values'].get('supplier_matching',[])
