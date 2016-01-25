@@ -43,7 +43,6 @@ class wizard_ntty_product_import(models.TransientModel):
 
 		ntty_check_supliers = ntty.ntty_check_supliers
 		ntty_generate_price_list = ntty.ntty_generate_price_list
-		ntty_requirements = ntty.ntty_requirements
 		ntty_related_products = ntty.ntty_related_products
 		ntty_partner_info = ntty.ntty_partner_info
 		ntty_product_category = ntty.ntty_product_category
@@ -65,7 +64,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				flag_automotive = False
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
-				if certifications and ntty_requirements:
+				if certifications:
 		                	for certification in certifications:
                        				if certification['id'] == 131:
 		                                	flag_rohs = True

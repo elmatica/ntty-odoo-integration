@@ -423,9 +423,7 @@ class product_template(models.Model):
                         sup_odoo = self.env['res.partner'].search([('supplier', '=', True), ('is_company', '=', True),\
                      ('ntty_partner_id', '=', supplier['id'])])
                         if not sup_odoo:
-                            sup_odoo = self.env['res.partner'].create({'supplier': True, \
-                    'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
-                    'partner_approved': True, 'active': True})
+                            sup_odoo = self.env['res.partner'].create({'supplier': True,'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], 'partner_approved': True, 'active': True})
                 identifier_odoo = identifier + '#' + str(supplier['id'])
                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
                 vals['ntty_odoo'] = identifier_odoo
