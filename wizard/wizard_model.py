@@ -326,3 +326,10 @@ class wizard_ntty_product_import(models.TransientModel):
 			'target': 'new'}
 
 
+class wizard_ntty_update_lifecycle(models.TransientModel):
+	_name = 'wizard.ntty.update.lifecycle'
+
+	@api.multi
+	def pull_ntty_lifecycles(self):
+		return_value = self.env['product.template']._scheduled_connect_odoo_ntty()
+		return True
