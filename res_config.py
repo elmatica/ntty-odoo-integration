@@ -27,7 +27,7 @@ class ntty_config_settings(models.Model):
 	ntty_partner_info = fields.Boolean(string='Include Partner Information',default=True)
 	ntty_product_category = fields.Boolean(string='Include Product Category',default=True)
 	ntty_supplier_short_name = fields.Boolean(string='Include Supplier Short Name',default=True)
-	ntty_update_lifecycle_manually = fields.Boolean(string='Update Lifecycle Manually',default=True)
+	# ntty_update_lifecycle_manually = fields.Boolean(string='Update Lifecycle Manually',default=True)
 	ntty_lifecycle_ids = fields.One2many(comodel_name='ntty.lifecycle.mapping',inverse_name='ntty_id')
 	#ntty_service_type = fields.Char(String="Export type", default='odoo_export', store=True)
 

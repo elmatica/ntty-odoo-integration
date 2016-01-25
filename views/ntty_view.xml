@@ -68,9 +68,9 @@
         					<field name="ntty_product_category" />
         					<field name="ntty_supplier_short_name" />
 					</group>
-					<group string="Lifecycle">
+					<!-- group string="Lifecycle">
         					<field name="ntty_update_lifecycle_manually" />
-					</group>
+					</group -->
 				</page>
 				<page string="Lifecycle mappings">
 					<field name="ntty_lifecycle_ids">
