@@ -159,6 +159,7 @@ class product_template(models.Model):
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
 
+	import pdb;pdb.set_trace()
         try:
             resp = urllib2.urlopen(req)
         except StandardError:
