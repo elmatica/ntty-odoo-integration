@@ -44,7 +44,6 @@ class wizard_ntty_product_import(models.TransientModel):
 		ntty_partner_info = ntty.ntty_partner_info
 		ntty_product_category = ntty.ntty_product_category
 		ntty_supplier_short_name = ntty.ntty_supplier_short_name
-		ntty_update_lifecycle_manually = ntty.ntty_update_lifecycle_manually
 
 		if len(self.detail_ids) == 0 and ntty_check_supliers:
 			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
