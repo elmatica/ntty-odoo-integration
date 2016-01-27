@@ -11,7 +11,7 @@
         </div>
         <div class="oe_span6">
             <p class="oe_mt32">
-Let's you easily import your entities from NTTY and transform them into products in Odoo. Based on settings realted to the module you can control how and what you should create.
+Let's you easily import your entities from NTTY and transform them into products in Odoo. Based on settings realted to the module, you can control how and what you should create.
             </p>
         </div>
     </div>
@@ -19,15 +19,15 @@ Let's you easily import your entities from NTTY and transform them into products
 
 <section class="oe_container oe_dark">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Products, The Way You Like It</h2>
+        <h2 class="oe_slogan">NTTY Import with ease</h2>
         <div class="oe_span6">
             <p class="oe_mt32">
-Import your produtcs through the NTTY Import Wisard, and use the settings to control if your product should be given a Brand, and if it should be tied to a specific supplier. Any non-existent Suppiers will be created. Your entities specific attributes will be loaded based on manual setup of tags in the Product Variants
+Use the NTTY Import wizard to import your entities from NTTY and transform them into Products in Odoo. The wizard uses the entity identifier to gather the entity information, such as, name, product owner, values etc. Depending on your settings and the entity itself, a supplier list will be rendered and one product will be created pr supplier selected. The product owner can also be tied to your product brand.
             </p>
         </div>
         <div class="oe_span6">
             <div class="oe_row_img oe_centered">
-                <img class="oe_picture oe_screenshot" src="crm_sc_02.png">
+                <img class="oe_picture oe_screenshot" src="wizard.png">
             </div>
         </div>
     </div>
@@ -35,13 +35,13 @@ Import your produtcs through the NTTY Import Wisard, and use the settings to con
 
 <section class="oe_container oe_dark">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Update lifecycle</h2>
+        <h2 class="oe_slogan">Keep your products up to date</h2>
         <div class="oe_span6">
             <p class="oe_mt32">
-Keeping your products lifecycle up to date is controlled in the background through accessing NTTY and get the latest lifecycle changes from the entity.
+By invoking the Product Lifcycle Management module, you will be able to track the status of your product. It will be synced with NTTY's own lifecycle , through running a background job
             </p>
             <p class="oe_mt32">
-Find duplicates, merge leads and assign them to the right salesperson in one operation. Spend less time on administration and more time on qualifying leads.
+The module have 4 stages and each stage of the lifecycle from NTTY, is mapped to one of these stages thorugh the Lifecycle settings.
             </p>
         </div>
         <div class="oe_span6">
@@ -54,8 +54,7 @@ Find duplicates, merge leads and assign them to the right salesperson in one ope
 
 <section class="oe_container">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Organize Your Opportunities</h2>
-        <h3 class="oe_slogan">A clean user interface with everything in one screen</h3>
+        <h2 class="oe_slogan">Import customers/companies</h2>
         <div class="oe_span6">
             <div class="oe_row_img oe_centered">
                 <img class="oe_picture oe_screenshot" src="crm_sc_06.png">
@@ -63,9 +62,9 @@ Find duplicates, merge leads and assign them to the right salesperson in one ope
         </div>
         <div class="oe_span6">
             <p class="oe_mt32">
-Get your opportunities organized to stay focused on the best deals. Manage all your customer interactions from the opportunity like emails, internal notes, meetings and quotations.
+If desired, you can import your customers based on how you have defined your entity in NTTY. This will also run as a bacground job, based on your settings.
             </p><p>
-Follow opportunities that interest you to get notified upon specific events: deal won or lost, stage changed, new customer demand, etc.
+The list of customers/companies are gathered based on the article's organization and the organization of each part number tied to the article.
             </p>
         </div>
     </div>
@@ -73,12 +72,49 @@ Follow opportunities that interest you to get notified upon specific events: dea
 
 <section class="oe_container oe_dark">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Email Integration and Automation</h2>
+        <h2 class="oe_slogan">NTTY Configuration</h2>
         <div class="oe_span6">
             <p class="oe_mt32">
-Work with the email applications you already use every day. Whether your company uses Microsoft Outlook or Gmail, no one needs to change the way they work, so everyone stays productive.
+Since entity retrieval will be done thorugh API calls to NTTY, we need configure the connection. You will be required to enter:
+<li>NTTY service address: <i>http://www.ntty.com/api/v1/</i></li>
+<li>NTTY service user email: <i>email address of the NTTY user</i></li>
+<li>NTTY service token: <i>the authorization token of the NTTY user</i></li>
+
+
             </p><p>
-Route, sort and filter incoming emails automatically. Odoo CRM handles incoming emails and route them to the right opportunities or sales team. New leads are created on the fly and interested salespersons are notified automatically.
+            <h3 class="oe_slogan">Product settings</h3>
+Here we will list the settings that can be issued for a product.
+            </p><p>
+            <h3 class="oe_slogan">Product variant settings - Manual step</h3>
+            <p>
+Each entity can contain a set of values. The values are Key-Value pairs and can be brought over to your product in Odoo by adding the key to your product attribute. For each match we have, the value of this Key will be created under the Product Variants tab on the Product itself. The key-value pair for Supplier Matching is by default used for processing the supplier list that you can create a produt from. If one wants to maintain a full list of all Suppliers in the supplier matching, it needs to be created as an attribute.
+</p>
+<li>Determine your Key-Value pairs</li>
+<div class="oe_span6">
+            <div class="oe_row_img oe_centered">
+                <img class="oe_picture oe_screenshot" src="values.png">
+            </div>
+        </div>
+
+<li>Create Attributes</li>
+<div class="oe_span6">
+            <div class="oe_row_img oe_centered">
+                <img class="oe_picture oe_screenshot" src="attributes.png">
+            </div>
+        </div>
+<li>View values</li>
+<div class="oe_span6">
+            <div class="oe_row_img oe_centered">
+                <img class="oe_picture oe_screenshot" src="view_attr.png">
+            </div>
+        </div>
+
+
+
+
+            </p><p>
+            <h3 class="oe_slogan">Lifecycle settings</h3>
+Here we will list the settings that can be issued for lifecycle.
             </p>
         </div>
         <div class="oe_span6">
@@ -91,7 +127,7 @@ Route, sort and filter incoming emails automatically. Odoo CRM handles incoming 
 
 <section class="oe_container">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Collaborative Agenda</h2>
+        <h2 class="oe_slogan">Dependencies</h2>
         <div class="oe_span6">
             <div class="oe_row_img oe_centered">
                 <img class="oe_picture oe_screenshot" src="crm_sc_agenda.png">
@@ -99,7 +135,7 @@ Route, sort and filter incoming emails automatically. Odoo CRM handles incoming 
         </div>
         <div class="oe_span6">
             <p class="oe_mt32">
-Schedule your meetings using the integrated calendar. You can see your agenda and your colleagues' in one view. As a manager, it's easy to see what your team is busy with.
+The NTTY Module is dependent on the <a href="https://www.odoo.com/apps/modules/8.0/product_brand/">Product Brand Module</a>,  <a href="https://www.odoo.com/apps/modules/8.0/product_variant_cost_price/">Product Variants Module</a><a href="https://www.odoo.com/apps/modules/8.0/product_lifecycle/">Product Lifecycle Managment module</a>.
             </p>
         </div>
     </div>
@@ -107,74 +143,25 @@ Schedule your meetings using the integrated calendar. You can see your agenda an
 
 <section class="oe_container oe_dark">
     <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Lead Automation and Marketing Campaigns</h2>
-        <h3 class="oe_slogan">Drive performance by automating tasks</h3>
+        <h2 class="oe_slogan">Contributors</h2>
         <div class="oe_span6">
-            <p class="oe_mt32">
-            Use our marketing campaigns to automate lead acquisition, follow ups and promotions. Define automated actions (e.g. ask a salesperson to call, send an email, ...) based on triggers (no activity since 20 days, answered a promotional email, etc.)
-            </p><p class="oe_mt32">
-            Optimize campaigns from lead to close, on every channel. Make smarter decisions about where to invest and show the impact of your marketing activities on your company's bottom line.
-            </p>
+            <div class="oe_quote">
+                <cite class="oe_cite oe_clearfix">
+                    <img class="oe_photo" src="jorgen.jpg">
+                    <div class="oe_author">Gustavo Orillo</div>
+                    <div class="oe_job">Developer at <a href="http://www.moldeointeractive.com.ar/" target="_blank">Moldeo Interactive </a>.</div>
+                </cite>
+            </div>
         </div>
         <div class="oe_span6">
-            <div class="oe_row_img oe_centered">
-                <img class="oe_picture oe_screenshot" src="crm_sc_marketing.png">
+            <div class="oe_quote">
+                <cite class="oe_cite oe_clearfix">
+                    <img class="oe_photo" src="ntty.jpg">
+                    <div class="oe_author">NTTY</div>
+                    <div class="oe_job">The staff of <a href="http://www.ntty.com" target="_blank">NTTY</a>.</div>
+                </cite>
             </div>
-        </div>
-    </div>
-</section>
-
-<section class="oe_container">
-    <div class="oe_row">
-        <h2 class="oe_slogan">Customize Your Sales Cycle</h2>
-        <h3 class="oe_slogan">It Fits Your Sales Approach</h3>
-        <p>
-Customize your sales cycle by configuring sales stages that perfectly fit your sales approach. Control statistics to get accurate forecasts to improve your sales performance at every stage of your customer relationship.
-        </p>
-        <div class="oe_row_img oe_centered oe_mt32">
-            <img class="oe_picture oe_screenshot" src="crm_sc_04a.png">
-            <img class="oe_picture oe_screenshot" src="crm_sc_04b.png">
-            <img class="oe_picture oe_screenshot" src="crm_sc_04c.png">
-            <img class="oe_picture oe_screenshot" src="crm_sc_04d.png">
-        </div>
-    </div>
-</section>
-
-<section class="oe_container oe_dark">
-    <div class="oe_row oe_spaced">
-        <h2 class="oe_slogan">Drive Engagement with Gamification</h2>
-        <h3 class="oe_slogan">Leverage sales' natural desire for competition</h3>
-        <p class="oe_mt32">
-               Reinforce good habits and improve win rates with real-time recognition and rewards inspired by <a href="http://en.wikipedia.org/wiki/Gamification">game mechanics</a>. Align sales teams around clear business objectives with challenges, personal objectives and team leader boards.
-        </p>
-        <div class="oe_span4 oe_centered">
-            <h3>Leaderboards</h3>
-            <div class="oe_row_img oe_centered">
-                <img class="oe_picture" src="crm_game_01.png">
-            </div>
-            <p>
-               Promote leaders and competition amongst sales team with performance ratios.
-            </p>
-        </div>
-        <div class="oe_span4 oe_centered">
-            <h3>Personnal Objectives</h3>
-            <div class="oe_row_img">
-                <img class="oe_picture" src="crm_game_02.png">
-            </div>
-            <p>
-                Assign clear goals to users to align them with the company objectives.
-            </p>
-        </div>
-        <div class="oe_span4 oe_centered">
-            <h3>Team Targets</h3>
-            <div class="oe_row_img oe_centered">
-                <img class="oe_picture" src="crm_game_03.png">
-            </div>
-            <p>
-                Compare revenues with forecasts and budgets in real time.
-            </p>
-        </div>
-    </div>
+        </div>    </div>
 </section>
 
 <section class="oe_container">
@@ -186,13 +173,12 @@ Customize your sales cycle by configuring sales stages that perfectly fit your s
         <div class="oe_span6">
             <div class="oe_quote">
                 <q>
-                    With Odoo CRM I keep all the information about leads and customers
-                    in a single place, and share it with my colleagues. It's great and effective.
+                    With NTTY Odoo my products is jst a click away from being ERP'ed, and they are always kept up to date.
                 </q>
                 <cite class="oe_cite oe_clearfix">
-                    <img class="oe_photo" src="claudia-sebastiani.jpg">
-                    <div class="oe_author">Claudia Sebastiani</div>
-                    <div class="oe_job">Sales manager at <a href="http://openerp.creativiquadrati.it" target="_blank">CQ Creativi Quadrati</a>.</div>
+                    <img class="oe_photo" src="jorgen.jpg">
+                    <div class="oe_author">Jørgen Bakke</div>
+                    <div class="oe_job">Cheif Customer Officer at <a href="http://elmatica.com" target="_blank">Elmatica - <i>the pcb reference</i></a>.</div>
                 </cite>
             </div>
         </div>
