@@ -81,6 +81,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				'selected': 'yes'
 				}
 			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
+		created_products = []
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
 
@@ -229,7 +230,7 @@ class wizard_ntty_product_import(models.TransientModel):
                                         prod = prod.create(vals)
                                 else:
                                         prod.write(vals)
-
+				created_products.append(prod)
 				# Check suppliers setting
 				if ntty_check_supliers:
 	                                vals_supplier = {
@@ -281,14 +282,15 @@ class wizard_ntty_product_import(models.TransientModel):
 					detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
 
 		if ntty_related_products:
-			related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
-			related = [related_product.product_tmpl_id.id for related_product in related_products \
-				if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
-			vals = {
-				'alternative_product_ids': [(6,0,related)],
-				}
-			product_template = prod.product_tmpl_id
-			product_template.write(vals)
+			for prod in created_products:
+				related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
+				related = [related_product.product_tmpl_id.id for related_product in related_products \
+					if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
+				vals = {
+					'alternative_product_ids': [(6,0,related)],
+					}
+				product_template = prod.product_tmpl_id
+				product_template.write(vals)
 		return True
 
 	@api.multi

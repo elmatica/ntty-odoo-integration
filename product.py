@@ -159,7 +159,6 @@ class product_template(models.Model):
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
 
-	import pdb;pdb.set_trace()
         try:
             resp = urllib2.urlopen(req)
         except StandardError:
@@ -418,6 +417,7 @@ class product_template(models.Model):
             suppliers = entity['values']['supplier_matching']
             # suppliers = entity['values']['certification_matching']
             if suppliers and suppliers != 'multiple values in the entities':
+		supplier = {}
                 if type(suppliers) == dict:
                     suppliers = [suppliers]
                     for supplier in suppliers:
