@@ -29,6 +29,11 @@ class res_partner(models.Model):
 
     @api.onchange('short_name')
     def update_product_name(self):
+	ntty = self.env['ntty.config.settings'].browse(1)
+        if not ntty:
+                return None
+	if not ntty.ntty_supplier_short_name:
+		return None
 	supplier = self.env['res.partner'].search([('ntty_partner_id','=',self.ntty_partner_id)])
         if supplier:
 	    prod_suppliers = self.env['product.supplierinfo'].search([('name','=',supplier.id)])
