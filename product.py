@@ -22,10 +22,25 @@ class res_partner(models.Model):
             url = system_param.value + str(self.ntty_partner_id)
         self.ntty_url = url
 
-        ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
-        ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
-        mnda = fields.Char(string='MNDA',size=128)
-        short_name = fields.Char(string='Supplier Short Name',size=128)
+    ntty_partner_id = fields.Integer(string= _('Partner ID in NTTY'), help= _('Partner identifier in NTTY'))
+    ntty_url = fields.Char(string="NTTY URL",compute='_compute_ntty_url')
+    mnda = fields.Char(string='MNDA',size=128)
+    short_name = fields.Char(string='Supplier Short Name',size=128)
+
+    @api.onchange('short_name')
+    def update_product_name(self):
+	ntty = self.env['ntty.config.settings'].browse(1)
+        if not ntty:
+                return None
+	if not ntty.ntty_supplier_short_name:
+		return None
+	supplier = self.env['res.partner'].search([('ntty_partner_id','=',self.ntty_partner_id)])
+        if supplier:
+	    prod_suppliers = self.env['product.supplierinfo'].search([('name','=',supplier.id)])
+	    for prod_sup in prod_suppliers:
+                prod_template = prod_sup.product_tmpl_id
+                new_name = prod_template.article_part_number + ' ' + prod_template.product_code + ' ' +  self.short_name
+                prod_template.write({'name': new_name})
 
 class product_product(models.Model):
     _inherit = 'product.product'
@@ -170,14 +185,21 @@ class product_template(models.Model):
         imap = mapp[ lifecycle_stage ]
         _logger.info('Mapping NTTY to Lifecycle imap[]:' + str(imap) )
         outvalue = ""
-        if imap<=10:
-            outvalue = "draft"
-        elif imap<=22:
-            outvalue = "sellable"
-        elif imap<=24:
-            outvalue = "end"
-        elif imap<=26:
-            outvalue = "obsolete"
+	lifecycle_mapping = self.env['ntty.lifecycle.mapping'].search([('ntty_id','=',ntty.id),('name','=',str(imap))])
+	if lifecycle_mapping:
+		outvalue = lifecycle_mapping.state2
+	else:
+            raise except_orm(_('Warning'), _("Can not map lifecycle."))
+            return {}
+
+        #if imap<=10:
+        #    outvalue = "draft"
+        #elif imap<=22:
+        #    outvalue = "sellable"
+        #elif imap<=24:
+        #    outvalue = "end"
+        #elif imap<=26:
+        #    outvalue = "obsolete"
 
         _logger.info('Mapping NTTY to Lifecycle:' + str(outvalue) )
         templates = self.env['product.template'].search([('ntty_id','=',lifecycle_ntty_id)])
@@ -400,15 +422,14 @@ class product_template(models.Model):
             suppliers = entity['values']['supplier_matching']
             # suppliers = entity['values']['certification_matching']
             if suppliers and suppliers != 'multiple values in the entities':
+		supplier = {}
                 if type(suppliers) == dict:
                     suppliers = [suppliers]
                     for supplier in suppliers:
                         sup_odoo = self.env['res.partner'].search([('supplier', '=', True), ('is_company', '=', True),\
                      ('ntty_partner_id', '=', supplier['id'])])
                         if not sup_odoo:
-                            sup_odoo = self.env['res.partner'].create({'supplier': True, \
-                    'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], \
-                    'partner_approved': True, 'active': True})
+                            sup_odoo = self.env['res.partner'].create({'supplier': True,'is_company': True, 'name': supplier['name'], 'ntty_partner_id': supplier['id'], 'partner_approved': True, 'active': True})
                 identifier_odoo = identifier + '#' + str(supplier['id'])
                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
                 vals['ntty_odoo'] = identifier_odoo

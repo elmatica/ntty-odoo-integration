@@ -26,12 +26,62 @@ class wizard_ntty_product_import(models.TransientModel):
 
 	@api.multi
 	def create_ntty_products(self):
-		if len(self.detail_ids) == 0:
+                ntty_id = self.ntty_id
+                if not ntty_id:
+                        raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
+                        return None
+
+                ntty = self.env['ntty.config.settings'].browse(1)
+                if not ntty:
+                        return None
+                ntty_service_address = ntty.ntty_service_address
+                ntty_service_user_email = ntty.ntty_service_user_email
+                ntty_service_token = ntty.ntty_service_token
+
+		ntty_check_supliers = ntty.ntty_check_supliers
+		ntty_generate_price_list = ntty.ntty_generate_price_list
+		ntty_related_products = ntty.ntty_related_products
+		ntty_partner_info = ntty.ntty_partner_info
+		ntty_product_category = ntty.ntty_product_category
+		ntty_supplier_short_name = ntty.ntty_supplier_short_name
+
+		if len(self.detail_ids) == 0 and ntty_check_supliers:
 			raise osv.except_osv(('Error'), ('Please enter a NTTY ID and pull its suppliers'))
                 	return None
-		ntty_data = self.ntty_data
+
 		identifier = self.ntty_id
-        	res = ast.literal_eval(self.ntty_data)
+		ntty_data = self.ntty_data
+		if not ntty_data:
+
+	                httplib.HTTPConnection._http_vsn = 10
+        	        httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+
+                	req = urllib2.Request(str(ntty_service_address) + "/entities/" + str(ntty_id))
+	                req.add_header('X-User-Email', str(ntty_service_user_email))
+        	        req.add_header('X-User-Token', str(ntty_service_token))
+                	try:
+	                    resp = urllib2.urlopen(req)
+        	        except StandardError:
+                	    raise except_orm(_('Warning'), _("Error connecting to NTTY."))
+	                    return False
+
+        	        if not resp.code == 200 and resp.msg == "OK":
+                	    raise except_orm(_('Warning'), _("Unable to connect to NTTY."))
+	                    return {}
+
+        	        content = resp.read()
+                	res = json.loads(content)
+		else:
+			identifier = self.ntty_id
+	        	res = ast.literal_eval(self.ntty_data)
+		if not ntty_check_supliers:
+			vals_detail = {
+				'import_id': self.id,
+				'ntty_partner_id': -999,
+				'selected': 'yes'
+				}
+			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
+		created_products = []
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
 
@@ -45,21 +95,21 @@ class wizard_ntty_product_import(models.TransientModel):
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
 				if certifications:
-			                for certification in certifications:
-                        			if certification['id'] == 131:
-			                                flag_rohs = True
+		                	for certification in certifications:
+                       				if certification['id'] == 131:
+		                                	flag_rohs = True
                         			if certification['id'] == 132:
 			                                flag_ul = True
-                        			if 'Automotive' in certification['name']:
+               	        			if 'Automotive' in certification['name']:
 			                                flag_automotive = True
-                        			        category_id = self.env['product.category'].search([('name','=','Automotive')])
-			                                if category_id:
-                        			                categ_id = category_id.id
+                       				        category_id = self.env['product.category'].search([('name','=','Automotive')])
+		                	                if category_id:
+                       				                categ_id = category_id.id
 			                        if 'Defense' in certification['name']:
-                        			        flag_defense = True
+       	                			        flag_defense = True
 			                                category_id = self.env['product.category'].search([('name','=','Defense')])
-                        			        if category_id:
-			                                        categ_id = category_id.id
+                       				        if category_id:
+		        	                                categ_id = category_id.id
 		   	        # Searches for product_owner
 			        product_brand = entity.get('product_owner','')
 			        product_brand_text = entity.get('product_owner','')
@@ -164,10 +214,13 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
 			        vals['default_code'] = default_code
-				if detail.partner_id.short_name:
+				if detail.partner_id.short_name and ntty_supplier_short_name and ntty_check_supliers:
 				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
-				else:	
-				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name
+				else:
+					if detail.partner_id.name:	
+					        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.name 
+					else:
+					        vals['name'] =  article_part_number + ' ' + product_code 
 			        vals['description'] = part_description,
 				identifier_odoo = identifier + '#' + str(detail.partner_id.ntty_partner_id)
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
@@ -177,13 +230,15 @@ class wizard_ntty_product_import(models.TransientModel):
                                         prod = prod.create(vals)
                                 else:
                                         prod.write(vals)
-
-                                vals_supplier = {
-                                         	'name': detail.partner_id.id,
+				created_products.append(prod)
+				# Check suppliers setting
+				if ntty_check_supliers:
+	                                vals_supplier = {
+       	                                	'name': detail.partner_id.id,
                                                 'company_id': 1,
-                                                'product_tmpl_id': prod.product_tmpl_id.id,
+	                                        'product_tmpl_id': prod.product_tmpl_id.id,
                                                 }
-                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
+	                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 				# Creates attributes
 				for entity_values_key in entity['values'].keys():
 					value = entity['values'][entity_values_key]
@@ -191,11 +246,11 @@ class wizard_ntty_product_import(models.TransientModel):
 					if attribute_id:
 						value_id = self.env['product.attribute.value'].\
 							search([('attribute_id','=',attribute_id.id),\
-								('name','=',value)])
+								('name','=',str(value))])
 						if not value_id:
 							vals_value = {
 								'attribute_id': attribute_id.id,
-								'name': value
+								'name': str(value),
 								}
 							value_id = self.env['product.attribute.value'].create(vals_value)
 							value_id = value_id.id
@@ -208,18 +263,34 @@ class wizard_ntty_product_import(models.TransientModel):
 							}
 						attribute_line_id = self.env['product.attribute.line'].\
 							create(vals_attribute_line)
-
+		
 		for detail in self.detail_ids:
-			if detail.selected == 'no':
+			if detail.selected == 'no' and detail.partner_id:
 				prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id)])
-				if not prod_sup:
+				po_sup = self.env['purchase.order'].search([('partner_id','=',detail.partner_id.id)])
+				inv_sup = self.env['account.invoice'].search([('partner_id','=',detail.partner_id.id)])
+				so_sup = self.env['sale.order'].search(['|',('partner_invoice_id','=',detail.partner_id.id),\
+										('partner_id','=',detail.partner_id.id)])
+				if not prod_sup and not po_sup and not inv_sup and not so_sup:
+					supplier_to_delete = detail.partner_id
 					try:
-						self.env['res.partner'].search([('id','=',detail.partner_id.id)]).unlink()
+						supplier_to_delete.unlink()
 					except:
 						pass
 			else:
-				detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
-	
+				if detail.ntty_partner_id != -999:
+					detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
+
+		if ntty_related_products:
+			for prod in created_products:
+				related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
+				related = [related_product.product_tmpl_id.id for related_product in related_products \
+					if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
+				vals = {
+					'alternative_product_ids': [(6,0,related)],
+					}
+				product_template = prod.product_tmpl_id
+				product_template.write(vals)
 		return True
 
 	@api.multi
@@ -255,6 +326,15 @@ class wizard_ntty_product_import(models.TransientModel):
         	res = json.loads(content)
 		self.write({'ntty_data':res})
 		if res:
+			if not ntty.ntty_check_supliers:
+			                return {
+	        		                'type': 'ir.actions.act_window',
+        	                		'res_model': self._name, # this model
+			                        'res_id': self.id, # the current wizard record
+			                        'view_type': 'form',
+                        			'view_mode': 'form',
+			                        'target': 'new'}
+
 			import_id = self.id
 			try:
 				suppliers = res['entity']['values'].get('supplier_matching',[])
@@ -289,4 +369,11 @@ class wizard_ntty_product_import(models.TransientModel):
 			'view_mode': 'form',
 			'target': 'new'}
 
-	
+
+class wizard_ntty_update_lifecycle(models.TransientModel):
+	_name = 'wizard.ntty.update.lifecycle'
+
+	@api.multi
+	def pull_ntty_lifecycles(self):
+		return_value = self.env['product.template']._scheduled_connect_odoo_ntty()
+		return True

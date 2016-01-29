@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <openerp>
     <data>
+        <record model="ir.ui.view" id="product_template_form_ntty">
+            <field name="name">product.template.form.ntty</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="website_sale.product_template_form_view"/>
+            <field name="arch" type="xml">	
+		<field name="alternative_product_ids" position="attributes">
+			<attribute name="widget">many2many</attribute>
+		</field>
+	    </field>
+	</record>
 
         <!-- view specific to res.partner -->
         <record model="ir.ui.view" id="view_partner_form_ntty">
@@ -43,11 +53,35 @@
             <field name="model">ntty.config.settings</field>
             <field name="arch" type="xml">
 		<form string="NTTY Configuration">
-			<group>
+			<group string="Connection">
 	                        <field name="ntty_service_address" />
         	                <field name="ntty_service_user_email" />
                 	        <field name="ntty_service_token" />
 			</group>
+			<notebook>
+				<page string="Product settings">
+					<group string="Product">
+				        	<field name="ntty_check_supliers" /> 
+        					<field name="ntty_generate_price_list" />
+	        				<field name="ntty_related_products" />
+        					<field name="ntty_partner_info" />
+        					<field name="ntty_product_category" />
+        					<field name="ntty_supplier_short_name" />
+					</group>
+					<!-- group string="Lifecycle">
+        					<field name="ntty_update_lifecycle_manually" />
+					</group -->
+				</page>
+				<page string="Lifecycle mappings">
+					<field name="ntty_lifecycle_ids">
+						<tree string="Lifecycle mappings" editable="bottom">
+							<field name="name" />
+							<field name="description" />
+							<field name="state2" />
+						</tree>
+					</field>
+				</page>
+			</notebook>
 		</form>
             </field>
         </record>
@@ -107,7 +141,8 @@
                 <xpath expr="//page[@string='Information']" position="inside">
                     <group string="Replacements Info">
                         <field name="replaced_by_product_id"/>
-                        <field name="replace_to_product_id" widget="many2many_tags" readonly="1"/>
+                        <!-- field name="replace_to_product_id" widget="many2many_tags" readonly="1"/ -->
+                        <field name="replace_to_product_id" widget="many2many" readonly="1"/>
                     </group>
                 </xpath>
                 <xpath expr="//notebook/page[@string='Inventory']/group[@string='Replacements Info']" position="attributes">
@@ -136,9 +171,6 @@
 	<menuitem action="action_import_ntty_products" id="menu_import_ntty_product_wizard"
         	parent="base.menu_ntty_config"
         	sequence="2"/>
-
-
-
 
     </data>
 </openerp>
