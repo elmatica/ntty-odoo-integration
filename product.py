@@ -151,7 +151,7 @@ class product_template(models.Model):
 	        return None
 
         ntty_service_address = ntty['ntty_service_address']
-        ntty_service_address = ntty_service_address.replace("http:","https:")
+        # ntty_service_address = ntty_service_address.replace("http:","https:")
         ntty_service_user_email = ntty['ntty_service_user_email']
         ntty_service_token = ntty['ntty_service_token']
 
@@ -163,12 +163,21 @@ class product_template(models.Model):
         req = urllib2.Request(request_string)
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
-
         try:
             resp = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            raise except_orm('Warning','HTTPError = ' + str(e.code))
+            return False
+        except urllib2.URLError, e:
+            raise except_orm('Warning','URLError = ' + str(e.reason))
+            return False
+        except httplib.HTTPException, e:
+            raise except_orm('Warning','HTTPException')
+            return False
         except StandardError:
             raise except_orm(_('Warning'), _("Error connecting to NTTY."))
             return False
+
 
         if not resp.code == 200 and resp.msg == "OK":
             raise except_orm(_('Warning'), _("Unable to connect to NTTY."))

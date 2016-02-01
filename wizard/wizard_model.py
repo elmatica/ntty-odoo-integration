@@ -20,9 +20,21 @@ class wizard_ntty_product_import_detail(models.TransientModel):
 class wizard_ntty_product_import(models.TransientModel):
 	_name = 'wizard.ntty.product.import'
 
+	@api.one
+	def _compute_enable_supplier_button(self):
+		return_value = False
+		ntty = self.env['ntty.config.settings'].browse(1)
+		if not ntty:
+			raise osv.except_osv('Error', 'Connection not defined')
+			return_value = False
+		if ntty and not ntty.ntty_check_supliers:
+			return_value = True
+               	self.enable_supplier_button = return_value
+
 	ntty_id = fields.Char('NTTY ID')
 	detail_ids = fields.One2many(comodel_name='wizard.ntty.product.import.detail',inverse_name='import_id')
 	ntty_data = fields.Text('NTTY Data')
+	enable_supplier_button = fields.Boolean(string='Enable Supplier Button',default=True,compute=_compute_enable_supplier_button)
 
 	@api.multi
 	def create_ntty_products(self):
