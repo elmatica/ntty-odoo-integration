@@ -18,9 +18,9 @@
 							<field name="selected" />
 						</tree>
 					</field>
-					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers"
-						     attrs="{'invisible': [('enable_supplier_button','=',True)]}" />
-					<button name="create_ntty_products" type="object" string="Create Products" 
+					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" />
+						     <!-- attrs="{'invisible': [('enable_supplier_button','=',True)]}" / -->
+					<button name="create_ntty_products" type="object" string="Create Products"  
 						     attrs="{'invisible':[('detail_ids', '==', False)]}" />
 				</form>
 			</field>
