@@ -110,7 +110,7 @@ class res_partner(models.Model):
                     uvalues = {
                         'name': res["name"],
                         'ntty_url': res["url"],
-                        'country_code': res["country_code"],
+                        'ntty_country_code': res["country_code"],
                         'verificationstate': res["verificationstate"],
                         'company_number': res["company_number"],
                         'jurisdiction_code': res["jurisdiction_code"],
@@ -132,3 +132,93 @@ class res_partner(models.Model):
         if len(_errors)>0:
             #raise except_orm(_('Warning'), _("We found some errors: ") + str(_errors) )
             _logger.error( _("We found some errors: ") + str(_errors) )
+
+
+    @api.model
+    def _scheduled_import_odoo_ntty(self):
+
+        #import pdb; pdb.set_trace()
+        _logger.info('Importing partners with NTTY')
+
+        ntty = self.env['ntty.config.settings'].browse(1)
+        if not ntty:
+            _logger.error(_('NTTY config setting not found, check if NTTY is installed'))
+            return None
+
+        ntty_service_address = ntty['ntty_service_address']
+        ntty_service_address = ntty_service_address.replace("http:","https:")
+        ntty_service_user_email = ntty['ntty_service_user_email']
+        ntty_service_token = ntty['ntty_service_token']
+
+
+        httplib.HTTPConnection._http_vsn = 10
+        httplib.HTTPConnection._http_vsn_str = 'HTTP/1.0'
+
+        _errors = {}
+
+        request_string = str(ntty_service_address) + "companies"
+        req = urllib2.Request(request_string)
+        req.add_header('X-User-Email', str(ntty_service_user_email))
+        req.add_header('X-User-Token', str(ntty_service_token))
+        _logger.info(_('NTTY Check company (url): ')+str(request_string))
+
+
+        try:
+            resp = urllib2.urlopen(req)
+
+            if not resp.code == 200 and resp.msg == "OK":
+                #raise except_orm(_('Warning'), _("Unable to connect to NTTY: string: ") + str(partner_string) + _(" code: ") + str(resp.code) )
+                _errors[ partner_string ] =  _("Unable to connect to NTTY: string: ") + str(partner_string) + _(" code: ") + str(resp.code)
+            else:
+                content = resp.read()
+                content_list = json.loads(content)
+                #_logger.info(_('NTTY Company info update >>> ')+str(content))
+#               {"id":106,
+#               "name":"Amphenol Printed Circuits, Inc.",
+#               "url":null,
+#               "country_code":null,
+#               "verificationstate":"Unverified",
+#               "company_number":"310626",
+#               "jurisdiction_code":"us_nh",
+#               "registered_address_in_full":"358 Hall Avenue\nWallingford CT 06492",
+#               "inactive":false,
+#               "organization_type":"COMPANY"}
+                for res in content_list:
+                    if res["inactive"]:
+                        act = False
+                    else:
+                        act = True
+
+                    company_number = res["company_number"]
+                    uvalues = {
+                        'ntty_partner_id': res["id"],
+                        'name': res["name"],
+                        'ntty_url': res["url"],
+                        'ntty_country_code': res["country_code"],
+                        'verificationstate': res["verificationstate"],
+                        'company_number': res["company_number"],
+                        'jurisdiction_code': res["jurisdiction_code"],
+                        'contact_address': res["registered_address_in_full"],
+                        'active': act,
+                        'organization_type': res["organization_type"],
+                    }
+
+                    par_exists = self.env['res.partner'].search([('ntty_partner_id','=', res["id"])] )
+
+                    if par_exists:
+                      _logger.info( _("Already in database: ") + str(res["name"]) )
+                    else:
+                         _logger.info( _("Importing new partner in database: ") + str(res["name"]) )
+                         par = self.env['res.partner'].create( uvalues )
+
+        except StandardError, error:
+#            except urllib2.HTTPError, error:
+            contents = error.read()
+            #raise except_orm(_('Warning'), _("Error connecting to NTTY: ") + str(partner_string)+_(" error:") + str(contents) )
+            _errors[ partner_string ] =  _("Error connecting to NTTY: ") + str(partner_string)+_(" error:") + str(contents)
+
+
+        if len(_errors)>0:
+            #raise except_orm(_('Warning'), _("We found some errors: ") + str(_errors) )
+            _logger.error( _("We found some errors: ") + str(_errors) )
+
