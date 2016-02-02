@@ -151,7 +151,7 @@ class product_template(models.Model):
 	        return None
 
         ntty_service_address = ntty['ntty_service_address']
-        # ntty_service_address = ntty_service_address.replace("http:","https:")
+        ntty_service_address = ntty_service_address.replace("http:","https:")
         ntty_service_user_email = ntty['ntty_service_user_email']
         ntty_service_token = ntty['ntty_service_token']
 

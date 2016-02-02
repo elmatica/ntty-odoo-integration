@@ -112,16 +112,19 @@ class wizard_ntty_product_import(models.TransientModel):
 		                                	flag_rohs = True
                         			if certification['id'] == 132:
 			                                flag_ul = True
-               	        			if 'Automotive' in certification['name']:
-			                                flag_automotive = True
-                       				        category_id = self.env['product.category'].search([('name','=','Automotive')])
-		                	                if category_id:
-                       				                categ_id = category_id.id
-			                        if 'Defense' in certification['name']:
-       	                			        flag_defense = True
-			                                category_id = self.env['product.category'].search([('name','=','Defense')])
-                       				        if category_id:
-		        	                                categ_id = category_id.id
+               	        			#if 'Automotive' in certification['name']:
+			                        #        flag_automotive = True
+                       				#        category_id = self.env['product.category'].search([('name','=','Automotive')])
+		                	        #        if category_id:
+                       				#                categ_id = category_id.id
+			                        #if 'Defense' in certification['name']:
+       	                			#        flag_defense = True
+			                        #        category_id = self.env['product.category'].search([('name','=','Defense')])
+                       				#        if category_id:
+		        	                #                categ_id = category_id.id
+						product_category = self.env['product.category'].search([('name','=',certification['name'])])
+						if product_category and len(product_category) == 1:
+							categ_id = product_category.id
 		   	        # Searches for product_owner
 			        product_brand = entity.get('product_owner','')
 			        product_brand_text = entity.get('product_owner','')
