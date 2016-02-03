@@ -241,6 +241,23 @@ class wizard_ntty_product_import(models.TransientModel):
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
                                 vals['ntty_odoo'] = identifier_odoo
                                 vals['ntty_id'] = identifier 
+				if ntty.ntty_mto:
+					routes = self.env['stock.location.route'].search([('name','=','Make To Order')])
+					route_ids = []
+					if routes:
+						for route in routes:
+							route_ids.append(route.id)
+						vals['route_ids'] = [(6,0,route_ids)]
+				if ntty.ntty_sold:
+					vals['sale_ok'] = True
+				else:
+					vals['sale_ok'] = False
+				if ntty.ntty_purchased:
+					vals['purchase_ok'] = True
+				else:
+					vals['purchase_ok'] = False
+
+
                                 if not prod:
                                         prod = prod.create(vals)
                                 else:
