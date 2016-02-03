@@ -122,9 +122,14 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        #        category_id = self.env['product.category'].search([('name','=','Defense')])
                        				#        if category_id:
 		        	                #                categ_id = category_id.id
-						product_category = self.env['product.category'].search([('name','=',certification['name'])])
-						if product_category and len(product_category) == 1:
-							categ_id = product_category.id
+						try:
+							if certification['certification_type'] == 'Category':
+								product_category = self.env['product.category'].search(\
+									[('name','=',certification['name'])])
+								if product_category and len(product_category) == 1:
+									categ_id = product_category.id
+						except:
+							continue
 		   	        # Searches for product_owner
 			        product_brand = entity.get('product_owner','')
 			        product_brand_text = entity.get('product_owner','')
