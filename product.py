@@ -35,7 +35,7 @@ class res_partner(models.Model):
 	if not ntty.ntty_supplier_short_name:
 		return None
 	supplier = self.env['res.partner'].search([('ntty_partner_id','=',self.ntty_partner_id)])
-        if supplier:
+        if supplier and len(supplier) == 1:
 	    prod_suppliers = self.env['product.supplierinfo'].search([('name','=',supplier.id)])
 	    for prod_sup in prod_suppliers:
                 prod_template = prod_sup.product_tmpl_id
