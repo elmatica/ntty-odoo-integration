@@ -106,6 +106,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				flag_automotive = False
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
+				certification_technology = ''
 				if certifications:
 		                	for certification in certifications:
                        				if certification['id'] == 131:
@@ -122,12 +123,60 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        #        category_id = self.env['product.category'].search([('name','=','Defense')])
                        				#        if category_id:
 		        	                #                categ_id = category_id.id
+						pcb_category_id = self.env['product.category'].search([('name','=','PCB')])
+						if not pcb_category_id:
+							vals_pcb_category = {
+								'name': 'PCB',
+								'parent_id': 1,
+								}
+							pcb_category_id = self.env['product.category'].create(vals_pcb_category)
+							pcb_category_id = pcb_category_id.id
+						else:
+							pcb_category_id = pcb_category_id.id
 						try:
+							if certification['certification_type'] == 'Technology':
+								certification_technology = certification['name']
 							if certification['certification_type'] == 'Category':
 								product_category = self.env['product.category'].search(\
 									[('name','=',certification['name'])])
+								parent_category = self.env['product.category'].search(\
+									[('name','=',certification_technology)])
+								parent_category_id = None
+								if not parent_category:
+									vals_parent_category = {
+										'name': certification_technology,
+										'parent_id': pcb_category_id,			
+										}
+									parent_category = self.env['product.category'].create(vals_parent_category)
+									parent_category = parent_category.id
+								else:
+									parent_category = parent_category.id
 								if product_category and len(product_category) == 1:
 									categ_id = product_category.id
+								else:
+									if certification_technology == '':
+										for cert in certifications:
+											if cert['certification_type'] == 'Technology':
+												certification_technology = cert['name']
+												parent_category = self.env['product.category'].search(\
+												[('name','=',certification_technology)])
+												parent_category_id = None
+												if not parent_category:
+													vals_parent_category = {
+														'name': certification_technology,
+														'parent_id': pcb_category_id,
+														}
+													parent_category = self.env['product.category'].create(vals_parent_category)
+													parent_category = parent_category.id
+												else:
+													parent_category = parent_category.id
+												
+									vals_category = {
+										'name': certification['name'],
+										'parent_id': parent_category,
+										}
+									category = self.env['product.category'].create(vals_category)
+									categ_id = category.id
 						except:
 							continue
 		   	        # Searches for product_owner
