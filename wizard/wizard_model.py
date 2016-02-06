@@ -23,7 +23,8 @@ class wizard_ntty_product_import(models.TransientModel):
 	@api.one
 	def _compute_enable_supplier_button(self):
 		return_value = False
-		ntty = self.env['ntty.config.settings'].browse(1)
+		ntty = self.env['ntty.config.settings'].search([])
+		# ntty = self.env['ntty.config.settings'].browse(1)
 		if not ntty:
 			raise osv.except_osv('Error', 'Connection not defined')
 			return_value = False
@@ -43,7 +44,8 @@ class wizard_ntty_product_import(models.TransientModel):
                         raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                         return None
 
-                ntty = self.env['ntty.config.settings'].browse(1)
+		ntty = self.env['ntty.config.settings'].search([])
+                # ntty = self.env['ntty.config.settings'].browse(1)
                 if not ntty:
                         return None
                 ntty_service_address = ntty.ntty_service_address
@@ -385,7 +387,8 @@ class wizard_ntty_product_import(models.TransientModel):
 		if not ntty_id:
 			raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                 	return None
-	        ntty = self.env['ntty.config.settings'].browse(1)
+		ntty = self.env['ntty.config.settings'].search([])
+	        # ntty = self.env['ntty.config.settings'].browse(1)
 	        if not ntty:
         	        return None
 	        ntty_service_address = ntty.ntty_service_address

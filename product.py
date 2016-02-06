@@ -29,7 +29,8 @@ class res_partner(models.Model):
 
     @api.onchange('short_name')
     def update_product_name(self):
-	ntty = self.env['ntty.config.settings'].browse(1)
+	ntty = self.env['ntty.config.settings'].search([])
+	# ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
                 return None
 	if not ntty.ntty_supplier_short_name:
@@ -146,7 +147,8 @@ class product_template(models.Model):
         templates_string = str(templates_list)
         templates_string = templates_string.replace("'","\"")
 
-        ntty = self.env['ntty.config.settings'].browse(1)
+	ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
 	        return None
 
@@ -255,7 +257,8 @@ class product_template(models.Model):
     def import_product_ntty(self,ntty_id=None):
         if not ntty_id:
             return None
-        ntty = self.env['ntty.config.settings'].browse(1)
+	ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
             return None
         ntty_service_address = ntty['ntty_service_address']

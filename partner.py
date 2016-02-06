@@ -57,7 +57,8 @@ class res_partner(models.Model):
  #       templates_string = str(templates_list)
  #       templates_string = templates_string.replace("'","\"")
 
-        ntty = self.env['ntty.config.settings'].browse(1)
+        ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
 	        return None
 
@@ -140,7 +141,8 @@ class res_partner(models.Model):
         #import pdb; pdb.set_trace()
         _logger.info('Importing partners with NTTY')
 
-        ntty = self.env['ntty.config.settings'].browse(1)
+        ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
             _logger.error(_('NTTY config setting not found, check if NTTY is installed'))
             return None
