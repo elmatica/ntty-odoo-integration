@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record model="ntty.config.settings" id="ntty_server_id">
+	  <field name="ntty_service_address">http://www.ntty.com/api/v1/</field>
+	  <field name="ntty_service_user_email">fredrik.holst@elmatica.com</field>
+	  <field name="ntty_service_token">pjXNTmMS1LDxSqStwLke</field>
+        </record>
+    </data>
+</openerp>
+

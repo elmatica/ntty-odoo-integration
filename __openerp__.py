@@ -6,6 +6,7 @@
     'data': [
 	'views/ntty_view.xml',
 	'wizard/wizard_view.xml',
+	'data/ntty_data.xml'
     ],
     'demo': [
     ],
