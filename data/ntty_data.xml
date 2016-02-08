@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="1">
+        <record model="ntty.config.settings" id="ntty_server_id">
+	  <field name="ntty_service_address">http://www.ntty.com/api/v1/</field>
+	  <field name="ntty_service_user_email">fredrik.holst@elmatica.com</field>
+	  <field name="ntty_service_token">pjXNTmMS1LDxSqStwLke</field>
+        </record>
+
+	<record model="ntty.lifecycle.mapping" id="lifecycle_01">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">01</field>
+		<field name="description">Lifecycle 01</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_02">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">02</field>
+		<field name="description">Lifecycle 02</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_03">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">03</field>
+		<field name="description">Lifecycle 03</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_04">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">04</field>
+		<field name="description">Lifecycle 04</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_05">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">05</field>
+		<field name="description">Lifecycle 05</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_06">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">06</field>
+		<field name="description">Lifecycle 06</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_07">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">07</field>
+		<field name="description">Lifecycle 07</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_08">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">08</field>
+		<field name="description">Lifecycle 08</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_09">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">09</field>
+		<field name="description">Lifecycle 09</field>
+		<field name="state2">draft</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_10">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">10</field>
+		<field name="description">Lifecycle 10</field>
+		<field name="state2">draft</field>
+	</record>
+
+	<record model="ntty.lifecycle.mapping" id="lifecycle_11">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">11</field>
+		<field name="description">Lifecycle 11</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_12">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">12</field>
+		<field name="description">Lifecycle 12</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_13">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">13</field>
+		<field name="description">Lifecycle 13</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_14">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">14</field>
+		<field name="description">Lifecycle 14</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_15">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">15</field>
+		<field name="description">Lifecycle 15</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_16">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">16</field>
+		<field name="description">Lifecycle 16</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_17">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">17</field>
+		<field name="description">Lifecycle 17</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_18">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">18</field>
+		<field name="description">Lifecycle 18</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_19">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">19</field>
+		<field name="description">Lifecycle 19</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_20">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">20</field>
+		<field name="description">Lifecycle 20</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_21">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">21</field>
+		<field name="description">Lifecycle 21</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_22">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">22</field>
+		<field name="description">Lifecycle 22</field>
+		<field name="state2">sellable</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_23">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">23</field>
+		<field name="description">Lifecycle 23</field>
+		<field name="state2">end</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_24">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">24</field>
+		<field name="description">Lifecycle 24</field>
+		<field name="state2">end</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_25">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">25</field>
+		<field name="description">Lifecycle 25</field>
+		<field name="state2">obsolete</field>
+	</record>
+	<record model="ntty.lifecycle.mapping" id="lifecycle_26">
+		<field name="ntty_id" ref="ntty_server_id" />
+		<field name="name">26</field>
+		<field name="description">Lifecycle 26</field>
+		<field name="state2">obsolete</field>
+	</record>
+	
+
+    </data>
+</openerp>
+

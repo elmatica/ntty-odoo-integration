@@ -29,8 +29,14 @@ class res_partner(models.Model):
 
     @api.onchange('short_name')
     def update_product_name(self):
+	ntty = self.env['ntty.config.settings'].search([])
+	# ntty = self.env['ntty.config.settings'].browse(1)
+        if not ntty:
+                return None
+	if not ntty.ntty_supplier_short_name:
+		return None
 	supplier = self.env['res.partner'].search([('ntty_partner_id','=',self.ntty_partner_id)])
-        if supplier:
+        if supplier and len(supplier) == 1:
 	    prod_suppliers = self.env['product.supplierinfo'].search([('name','=',supplier.id)])
 	    for prod_sup in prod_suppliers:
                 prod_template = prod_sup.product_tmpl_id
@@ -141,7 +147,8 @@ class product_template(models.Model):
         templates_string = str(templates_list)
         templates_string = templates_string.replace("'","\"")
 
-        ntty = self.env['ntty.config.settings'].browse(1)
+	ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
 	        return None
 
@@ -158,12 +165,21 @@ class product_template(models.Model):
         req = urllib2.Request(request_string)
         req.add_header('X-User-Email', str(ntty_service_user_email))
         req.add_header('X-User-Token', str(ntty_service_token))
-
         try:
             resp = urllib2.urlopen(req)
+        except urllib2.HTTPError, e:
+            raise except_orm('Warning','HTTPError = ' + str(e.code))
+            return False
+        except urllib2.URLError, e:
+            raise except_orm('Warning','URLError = ' + str(e.reason))
+            return False
+        except httplib.HTTPException, e:
+            raise except_orm('Warning','HTTPException')
+            return False
         except StandardError:
             raise except_orm(_('Warning'), _("Error connecting to NTTY."))
             return False
+
 
         if not resp.code == 200 and resp.msg == "OK":
             raise except_orm(_('Warning'), _("Unable to connect to NTTY."))
@@ -241,7 +257,8 @@ class product_template(models.Model):
     def import_product_ntty(self,ntty_id=None):
         if not ntty_id:
             return None
-        ntty = self.env['ntty.config.settings'].browse(1)
+	ntty = self.env['ntty.config.settings'].search([])
+        # ntty = self.env['ntty.config.settings'].browse(1)
         if not ntty:
             return None
         ntty_service_address = ntty['ntty_service_address']
@@ -417,6 +434,7 @@ class product_template(models.Model):
             suppliers = entity['values']['supplier_matching']
             # suppliers = entity['values']['certification_matching']
             if suppliers and suppliers != 'multiple values in the entities':
+		supplier = {}
                 if type(suppliers) == dict:
                     suppliers = [suppliers]
                     for supplier in suppliers:

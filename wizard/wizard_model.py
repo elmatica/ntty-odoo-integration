@@ -20,9 +20,22 @@ class wizard_ntty_product_import_detail(models.TransientModel):
 class wizard_ntty_product_import(models.TransientModel):
 	_name = 'wizard.ntty.product.import'
 
+	@api.one
+	def _compute_enable_supplier_button(self):
+		return_value = False
+		ntty = self.env['ntty.config.settings'].search([])
+		# ntty = self.env['ntty.config.settings'].browse(1)
+		if not ntty:
+			raise osv.except_osv('Error', 'Connection not defined')
+			return_value = False
+		if ntty and not ntty.ntty_check_supliers:
+			return_value = True
+               	self.enable_supplier_button = return_value
+
 	ntty_id = fields.Char('NTTY ID')
 	detail_ids = fields.One2many(comodel_name='wizard.ntty.product.import.detail',inverse_name='import_id')
 	ntty_data = fields.Text('NTTY Data')
+	enable_supplier_button = fields.Boolean(string='Enable Supplier Button',default=True,compute=_compute_enable_supplier_button)
 
 	@api.multi
 	def create_ntty_products(self):
@@ -31,7 +44,8 @@ class wizard_ntty_product_import(models.TransientModel):
                         raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                         return None
 
-                ntty = self.env['ntty.config.settings'].browse(1)
+		ntty = self.env['ntty.config.settings'].search([])
+                # ntty = self.env['ntty.config.settings'].browse(1)
                 if not ntty:
                         return None
                 ntty_service_address = ntty.ntty_service_address
@@ -81,6 +95,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				'selected': 'yes'
 				}
 			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
+		created_products = []
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
 
@@ -93,22 +108,79 @@ class wizard_ntty_product_import(models.TransientModel):
 				flag_automotive = False
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
+				certification_technology = ''
 				if certifications:
 		                	for certification in certifications:
                        				if certification['id'] == 131:
 		                                	flag_rohs = True
                         			if certification['id'] == 132:
 			                                flag_ul = True
-               	        			if 'Automotive' in certification['name']:
-			                                flag_automotive = True
-                       				        category_id = self.env['product.category'].search([('name','=','Automotive')])
-		                	                if category_id:
-                       				                categ_id = category_id.id
-			                        if 'Defense' in certification['name']:
-       	                			        flag_defense = True
-			                                category_id = self.env['product.category'].search([('name','=','Defense')])
-                       				        if category_id:
-		        	                                categ_id = category_id.id
+               	        			#if 'Automotive' in certification['name']:
+			                        #        flag_automotive = True
+                       				#        category_id = self.env['product.category'].search([('name','=','Automotive')])
+		                	        #        if category_id:
+                       				#                categ_id = category_id.id
+			                        #if 'Defense' in certification['name']:
+       	                			#        flag_defense = True
+			                        #        category_id = self.env['product.category'].search([('name','=','Defense')])
+                       				#        if category_id:
+		        	                #                categ_id = category_id.id
+						pcb_category_id = self.env['product.category'].search([('name','=','PCB')])
+						if not pcb_category_id:
+							vals_pcb_category = {
+								'name': 'PCB',
+								'parent_id': 1,
+								}
+							pcb_category_id = self.env['product.category'].create(vals_pcb_category)
+							pcb_category_id = pcb_category_id.id
+						else:
+							pcb_category_id = pcb_category_id.id
+						try:
+							if certification['certification_type'] == 'Technology':
+								certification_technology = certification['name']
+							if certification['certification_type'] == 'Category':
+								product_category = self.env['product.category'].search(\
+									[('name','=',certification['name'])])
+								parent_category = self.env['product.category'].search(\
+									[('name','=',certification_technology)])
+								parent_category_id = None
+								if not parent_category:
+									vals_parent_category = {
+										'name': certification_technology,
+										'parent_id': pcb_category_id,			
+										}
+									parent_category = self.env['product.category'].create(vals_parent_category)
+									parent_category = parent_category.id
+								else:
+									parent_category = parent_category.id
+								if product_category and len(product_category) == 1:
+									categ_id = product_category.id
+								else:
+									if certification_technology == '':
+										for cert in certifications:
+											if cert['certification_type'] == 'Technology':
+												certification_technology = cert['name']
+												parent_category = self.env['product.category'].search(\
+												[('name','=',certification_technology)])
+												parent_category_id = None
+												if not parent_category:
+													vals_parent_category = {
+														'name': certification_technology,
+														'parent_id': pcb_category_id,
+														}
+													parent_category = self.env['product.category'].create(vals_parent_category)
+													parent_category = parent_category.id
+												else:
+													parent_category = parent_category.id
+												
+									vals_category = {
+										'name': certification['name'],
+										'parent_id': parent_category,
+										}
+									category = self.env['product.category'].create(vals_category)
+									categ_id = category.id
+						except:
+							continue
 		   	        # Searches for product_owner
 			        product_brand = entity.get('product_owner','')
 			        product_brand_text = entity.get('product_owner','')
@@ -225,11 +297,28 @@ class wizard_ntty_product_import(models.TransientModel):
                                 prod = self.env['product.product'].search([('ntty_odoo', '=', identifier_odoo)])
                                 vals['ntty_odoo'] = identifier_odoo
                                 vals['ntty_id'] = identifier 
+				if ntty.ntty_mto:
+					routes = self.env['stock.location.route'].search([('name','=','Make To Order')])
+					route_ids = []
+					if routes:
+						for route in routes:
+							route_ids.append(route.id)
+						vals['route_ids'] = [(6,0,route_ids)]
+				if ntty.ntty_sold:
+					vals['sale_ok'] = True
+				else:
+					vals['sale_ok'] = False
+				if ntty.ntty_purchased:
+					vals['purchase_ok'] = True
+				else:
+					vals['purchase_ok'] = False
+
+
                                 if not prod:
                                         prod = prod.create(vals)
                                 else:
                                         prod.write(vals)
-
+				created_products.append(prod)
 				# Check suppliers setting
 				if ntty_check_supliers:
 	                                vals_supplier = {
@@ -281,14 +370,15 @@ class wizard_ntty_product_import(models.TransientModel):
 					detail.partner_id.message_post(body="Supplier created. Needs setup", context={})
 
 		if ntty_related_products:
-			related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
-			related = [related_product.product_tmpl_id.id for related_product in related_products \
-				if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
-			vals = {
-				'alternative_product_ids': [(6,0,related)],
-				}
-			product_template = prod.product_tmpl_id
-			product_template.write(vals)
+			for prod in created_products:
+				related_products = self.env['product.product'].search([('ntty_id','=',self.ntty_id)])
+				related = [related_product.product_tmpl_id.id for related_product in related_products \
+					if prod.product_tmpl_id.id != related_product.product_tmpl_id.id]
+				vals = {
+					'alternative_product_ids': [(6,0,related)],
+					}
+				product_template = prod.product_tmpl_id
+				product_template.write(vals)
 		return True
 
 	@api.multi
@@ -297,7 +387,8 @@ class wizard_ntty_product_import(models.TransientModel):
 		if not ntty_id:
 			raise osv.except_osv(('Error'), ('Please enter a NTTY ID'))
                 	return None
-	        ntty = self.env['ntty.config.settings'].browse(1)
+		ntty = self.env['ntty.config.settings'].search([])
+	        # ntty = self.env['ntty.config.settings'].browse(1)
 	        if not ntty:
         	        return None
 	        ntty_service_address = ntty.ntty_service_address
