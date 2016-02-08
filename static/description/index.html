@@ -1,3 +1,4 @@
+<title>NTTY - Odoo - Integration</title>
 <section class="oe_container">
     <div class="oe_row oe_spaced">
         <div class="oe_span12">
@@ -38,10 +39,15 @@ Use the NTTY Import wizard to import your entities from NTTY and transform them 
         <h2 class="oe_slogan">Keep your products up to date</h2>
         <div class="oe_span6">
             <p class="oe_mt32">
-By invoking the Product Lifcycle Management module, you will be able to track the status of your product. It will be synced with NTTY's own lifecycle , through running a background job
+By invoking the Product Lifcycle Management module, you will be able to track the status of your product. It will be synced with NTTY's own lifecycle by using a background job included in this module. However if you desire to control the update manually, we have also included a simple step to do so.
             </p>
             <p class="oe_mt32">
-The module have 4 stages and each stage of the lifecycle from NTTY, is mapped to one of these stages thorugh the Lifecycle settings.
+             <h3 class="oe_slogan">Configuring background job</h3>
+The module have 4 stages and each stage of the lifecycle from NTTY, is mapped to one of these stages through the Lifecycle Mappings.
+            </p>
+             <p class="oe_mt32">
+              <h3 class="oe_slogan">Update lifecycle manually</h3>
+Simply navigate to sales/NTTY/update Lifecycle. From there it is pretty obvious, but just to be safe, press the freakin' button
             </p>
         </div>
         <div class="oe_span6">
@@ -83,8 +89,26 @@ Since entity retrieval will be done thorugh API calls to NTTY, we need configure
 
             </p><p>
             <h3 class="oe_slogan">Product settings</h3>
-Here we will list the settings that can be issued for a product.
+            <p>
+            <h4 class="oe_slogan">Check Suppliers</h4>
+Will give you the possibility to import and create products one a ome-product-per-supplier level, provided the Supplier matching in NTTY has been run or the values with the key supplier_matching has been created. 
             </p><p>
+            <h4 class="oe_slogan">Generate Pricelist</h4>
+Will enable the feature to generate pricelists
+            </p><p>
+            <h4 class="oe_slogan">Include Related Products</h4>
+If this is set to True, the Import will chech and create a set of related products under your Sales on your Product in Odoo. The products related are based on the entity identifier. There is a possibility enter related products manually as well.
+            </p><p>
+            <h4 class="oe_slogan">Include Partner Information</h4>
+Will include any partner information available from NTTY.
+            </p><p>
+            <h4 class="oe_slogan">Include Product Category</h4>
+Will include the product categories defined in NTTY as Certifications/Requirements named Thecknology (Parent) and Category (Child). If the Technology/Category does not exist in Odoo, we will create it while creating the product. The categoriztion is post fixed to Odoo categories defined above, and if there is no category in NTTY, the category for that product will be set to the one defined in Odoo. In axample one could have predefined: All/Sports and the product from Entity could be Clothing/Shorts. The Product Category three will then look like this: All/Sports/Clothing/Shorts 
+            </p>
+            <h4 class="oe_slogan">Include Supplier Shortnane - Revise title</h4>
+If this one is set to to true, we will use the Shortname, if it is defined, or the Supplier name to suffix the product name. A great festure for recognizing diff products by their supplier.
+            </p>
+<p>
             <h3 class="oe_slogan">Product variant settings - Manual step</h3>
             <p>
 Each entity can contain a set of values. The values are Key-Value pairs and can be brought over to your product in Odoo by adding the key to your product attribute. For each match we have, the value of this Key will be created under the Product Variants tab on the Product itself. The key-value pair for Supplier Matching is by default used for processing the supplier list that you can create a produt from. If one wants to maintain a full list of all Suppliers in the supplier matching, it needs to be created as an attribute.
@@ -109,12 +133,22 @@ Each entity can contain a set of values. The values are Key-Value pairs and can 
             </div>
         </div>
 
-
-
-
             </p><p>
-            <h3 class="oe_slogan">Lifecycle settings</h3>
-Here we will list the settings that can be issued for lifecycle.
+            <h3 class="oe_slogan">Procurement/WMS </h3> 
+            We use these settings to determine the procurement method to initially assign your product. These can be overwritten on a product by product basis. If you wish to disable this, there will simply be nothing set for Procurement and Routes. There are 3 values possble to set, and they are all defualt on.
+            <li><b>Can be Sold</b><br>
+            When checked, this will mark the Product as a sellable product on import.
+            </li>
+            <li><b>Can be Purchased</b><br>
+            When checked, this will mark the product as a product than can be purchased.
+            </li>
+            <li><b>Make to call</b><br>
+            When checked, this will mark the Procurement method as make to call on import.
+            </li>
+            </p>
+            </p><p>
+            <h3 class="oe_slogan">Lifecycle Mappings</h3> 
+            In NTTY there are numerous stages and phases in a product lifecycle, however the PLM module in Odoo only caters for 5 stages. Therefore we have mapped each stage in NTTY to o certain stage in Odoo. These default mappings are provided though a XML-file and should be revised so it can be set to cater each organisation needs.
             </p>
         </div>
         <div class="oe_span6">
