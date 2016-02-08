@@ -109,7 +109,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				certifications = entity['values'].get('certifications',False)
 				categ_id = 1
 				certification_technology = ''
-				if certifications:
+				if certifications and ntty_product_category:
 		                	for certification in certifications:
                        				if certification['id'] == 131:
 		                                	flag_rohs = True

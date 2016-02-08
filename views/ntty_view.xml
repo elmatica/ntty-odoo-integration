@@ -52,7 +52,7 @@
             <field name="name">ntty.config.tree</field>
             <field name="model">ntty.config.settings</field>
             <field name="arch" type="xml">
-		<tree string="NTTY Configuration" edit="false" create="false" delete="false">
+		<tree string="NTTY Configuration" create="false" delete="false">
 		<!-- tree string="NTTY Configuration"  -->
 			<field name="ntty_service_address" />
 			<field name="ntty_service_user_email" />
@@ -64,7 +64,7 @@
             <field name="name">ntty.config.form</field>
             <field name="model">ntty.config.settings</field>
             <field name="arch" type="xml">
-		<form string="NTTY Configuration" edit="false" create="false" delete="false">
+		<form string="NTTY Configuration" create="false" delete="false">
 			<group string="Connection">
 	                        <field name="ntty_service_address" />
         	                <field name="ntty_service_user_email" />
