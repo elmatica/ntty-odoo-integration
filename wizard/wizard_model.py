@@ -32,10 +32,15 @@ class wizard_ntty_product_import(models.TransientModel):
 			return_value = True
                	self.enable_supplier_button = return_value
 
+	@api.one
+	def _compute_len_detail_ids(self):
+		self.len_detail_ids = len(self.detail_ids)
+
 	ntty_id = fields.Char('NTTY ID')
 	detail_ids = fields.One2many(comodel_name='wizard.ntty.product.import.detail',inverse_name='import_id')
 	ntty_data = fields.Text('NTTY Data')
 	enable_supplier_button = fields.Boolean(string='Enable Supplier Button',default=True,compute=_compute_enable_supplier_button)
+	len_detail_ids = fields.Integer(string='len_detail_ids',compute=_compute_len_detail_ids)
 
 	@api.multi
 	def create_ntty_products(self):
@@ -95,6 +100,13 @@ class wizard_ntty_product_import(models.TransientModel):
 				'selected': 'yes'
 				}
 			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
+
+		routes = self.env['stock.location.route'].search(['|',('name','=','Make To Order'),('name','=','Buy')])
+		if not routes:
+			raise osv.except_osv(('Error'), ('Routes MTO and Buy are not present!!!'))
+                	return None
+		route_ids = [x.id for x in routes]
+
 		created_products = []
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
@@ -298,12 +310,12 @@ class wizard_ntty_product_import(models.TransientModel):
                                 vals['ntty_odoo'] = identifier_odoo
                                 vals['ntty_id'] = identifier 
 				if ntty.ntty_mto:
-					routes = self.env['stock.location.route'].search([('name','=','Make To Order')])
-					route_ids = []
-					if routes:
-						for route in routes:
-							route_ids.append(route.id)
-						vals['route_ids'] = [(6,0,route_ids)]
+					#routes = self.env['stock.location.route'].search([('name','=','Make To Order')])
+					#route_ids = []
+					#if routes:
+					#	for route in routes:
+					#		route_ids.append(route.id)
+					vals['route_ids'] = [(6,0,route_ids)]
 				if ntty.ntty_sold:
 					vals['sale_ok'] = True
 				else:
@@ -326,7 +338,10 @@ class wizard_ntty_product_import(models.TransientModel):
                                                 'company_id': 1,
 	                                        'product_tmpl_id': prod.product_tmpl_id.id,
                                                 }
-	                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
+					prod_sup = self.env['product.supplierinfo'].search([('name','=',detail.partner_id.id),\
+						('product_tmpl_id','=',prod.product_tmpl_id.id)])
+					if not prod_sup:
+		                                prod_sup = self.env['product.supplierinfo'].create(vals_supplier)
 				# Creates attributes
 				for entity_values_key in entity['values'].keys():
 					value = entity['values'][entity_values_key]
