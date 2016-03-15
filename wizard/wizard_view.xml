@@ -7,7 +7,8 @@
 				<form string="Select Supplier">
 					<group>
 						<field name="ntty_id" style="width:40%%"/>
-						<field name="len_detail_ids" />
+						<field name="len_detail_ids" invisible="1"/>
+						<field name="sqm_pcb" readonly="1"/>
 					</group>
 					<h3>Please select suppliers to import</h3>
 					<field name="detail_ids" >
