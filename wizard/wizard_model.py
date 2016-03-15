@@ -39,6 +39,7 @@ class wizard_ntty_product_import(models.TransientModel):
 	ntty_id = fields.Char('NTTY ID')
 	detail_ids = fields.One2many(comodel_name='wizard.ntty.product.import.detail',inverse_name='import_id')
 	ntty_data = fields.Text('NTTY Data')
+	certifications = fields.Text('Certifications')
 	sqm_pcb = fields.Char('SQM PCB')
 	enable_supplier_button = fields.Boolean(string='Enable Supplier Button',default=True,compute=_compute_enable_supplier_button)
 	len_detail_ids = fields.Integer(string='len_detail_ids',compute=_compute_len_detail_ids)
@@ -446,7 +447,11 @@ class wizard_ntty_product_import(models.TransientModel):
 			except:
 				suppliers = []
 			sqm_pcb = res['entity']['values']['sqm_pcb']
-			self.write({'sqm_pcb':sqm_pcb})
+			res_certifications = res['entity']['values']['certifications']
+			certifications = ''
+			for certification in res_certifications:
+				certifications = certifications + ' - ' + certification['name']
+			self.write({'sqm_pcb':sqm_pcb,'certifications':certifications})
 			for supplier in suppliers:
 				supplier_id = self.env['res.partner'].search([('ntty_partner_id','=',supplier['id'])])
 				if not supplier_id:
