@@ -18,7 +18,6 @@ class product_attribute_value(osv.osv):
             context = {}
         if 'active_id' not in context:
             return None
-	import pdb;pdb.set_trace()
 	if context['active_model'] != 'wizard.ntty.product.import':
 	        p_obj = self.pool['product.attribute.price']
 	        p_ids = p_obj.search(cr, uid, [('value_id', '=', id), ('product_tmpl_id', '=', context['active_id'])], context=context)

@@ -331,6 +331,9 @@ class wizard_ntty_product_import(models.TransientModel):
                                 if not prod:
                                         prod = prod.create(vals)
                                 else:
+					if len(prod) > 1:
+						raise osv.except_osv(('Error'), ('More than one product/supplier for this NTTY ID'))
+                				return None
                                         prod.write(vals)
 				created_products.append(prod)
 				# Check suppliers setting
