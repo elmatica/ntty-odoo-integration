@@ -115,7 +115,15 @@ class wizard_ntty_product_import(models.TransientModel):
 
 				entity = res['entity']
 			        part_numbers = res['part_numbers']
-
+				temp_wcp_weight = entity['values'].get('wcp_weight',False)
+				if not temp_wcp_weight:
+					weight = 0
+				else:
+					try:
+						weight = float(temp_wcp_weight[:temp_wcp_weight.find(' ')])
+					except:
+						weight = 0
+						pass
 				flag_ul = False
 				flag_rohs = False
 				flag_defense = False
@@ -281,6 +289,7 @@ class wizard_ntty_product_import(models.TransientModel):
                 		    'lifecycle': lifecycle,
 		                    'ntty_ul': flag_ul,
                 		    'categ_id': categ_id,
+				    'weight': weight / 1000,
 		                    }
 			        product_code = ''
 		                part_name = ''
