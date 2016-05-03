@@ -458,8 +458,14 @@ class wizard_ntty_product_import(models.TransientModel):
 				suppliers = res['entity']['values'].get('supplier_matching',[])
 			except:
 				suppliers = []
-			sqm_pcb = res['entity']['values']['sqm_pcb']
-			res_certifications = res['entity']['values']['certifications']
+			try:
+				sqm_pcb = res['entity']['values']['sqm_pcb']
+			except:
+				sqm_pcb = 0
+			try:
+				res_certifications = res['entity']['values']['certifications']
+			except:
+				res_certifications = []
 			certifications = ''
 			for certification in res_certifications:
 				certifications = certifications + ' - ' + certification['name']
