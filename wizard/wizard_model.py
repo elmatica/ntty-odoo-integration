@@ -147,16 +147,27 @@ class wizard_ntty_product_import(models.TransientModel):
 			                        #        category_id = self.env['product.category'].search([('name','=','Defense')])
                        				#        if category_id:
 		        	                #                categ_id = category_id.id
+						temp_supplier = detail.partner_id
+						supplier_currency = temp_supplier.property_product_pricelist_purchase.currency_id.name
 						pcb_category_id = self.env['product.category'].search([('name','=','PCB')])
+						currency_category_id = self.env['product.category'].search([('name','=',supplier_currency)])
 						if not pcb_category_id:
 							vals_pcb_category = {
 								'name': 'PCB',
 								'parent_id': 1,
 								}
 							pcb_category_id = self.env['product.category'].create(vals_pcb_category)
-							pcb_category_id = pcb_category_id.id
+						if not currency_category_id:
+							vals_currency_category = {
+								'name': supplier_currency,
+								'parent_id': pcb_category_id.id
+								}
+							currency_category_id = self.env['product.category'].create(vals_currency_category)
+							pcb_category_id = currency_category_id.id
+							categ_id = currency_category_id.id
 						else:
-							pcb_category_id = pcb_category_id.id
+							pcb_category_id = currency_category_id.id
+							categ_id = currency_category_id.id
 						try:
 							if certification['certification_type'] == 'Technology':
 								certification_technology = certification['name']
