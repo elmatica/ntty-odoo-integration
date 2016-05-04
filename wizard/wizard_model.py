@@ -166,8 +166,15 @@ class wizard_ntty_product_import(models.TransientModel):
 							pcb_category_id = currency_category_id.id
 							categ_id = currency_category_id.id
 						else:
-							pcb_category_id = currency_category_id.id
-							categ_id = currency_category_id.id
+							if len(currency_category_id) > 1:
+								for currency_category in currency_category_id:
+									if currency_category.parent_id.id == pcb_category_id.id:
+										pcb_category_id = currency_category.id
+										categ_id = currency_category.id
+										break
+							else:
+								pcb_category_id = currency_category_id.id
+								categ_id = currency_category_id.id
 						try:
 							if certification['certification_type'] == 'Technology':
 								certification_technology = certification['name']
