@@ -306,6 +306,7 @@ class wizard_ntty_product_import(models.TransientModel):
 		                    'lifecycle_blocks_quotes': lifecycle_blocks_quotes,
                 		    'lifecycle': lifecycle,
 		                    'ntty_ul': flag_ul,
+				    'sale_delay': 0,
                 		    'categ_id': categ_id,
 				    'weight': weight / 1000,
 		                    }
