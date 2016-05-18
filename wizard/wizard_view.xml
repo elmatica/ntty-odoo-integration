@@ -7,9 +7,11 @@
 				<form string="Select Supplier">
 					<header>
 						<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" 
+							class="oe_right"
 						      attrs="{'invisible': [('len_detail_ids','>',0)]}" />
 						<button name="create_ntty_products" type="object" string="Create Products" 
-							     attrs="{'invisible':[('len_detail_ids', '==', 0)]}" />
+							class="oe_right"
+							attrs="{'invisible':[('len_detail_ids', '==', 0)]}" />
 					</header>
 					<group>
 						<field name="ntty_id" style="width:40%%"/>
