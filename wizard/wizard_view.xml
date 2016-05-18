@@ -5,6 +5,12 @@
 			<field name="model">wizard.ntty.product.import</field>
 			<field name="arch" type="xml">
 				<form string="Select Supplier">
+					<header>
+						<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" 
+						      attrs="{'invisible': [('len_detail_ids','>',0)]}" />
+						<button name="create_ntty_products" type="object" string="Create Products" 
+							     attrs="{'invisible':[('len_detail_ids', '==', 0)]}" />
+					</header>
 					<group>
 						<field name="ntty_id" style="width:40%%"/>
 						<field name="len_detail_ids" invisible="1"/>
@@ -20,10 +26,6 @@
 							<field name="selected" />
 						</tree>
 					</field>
-					<button name="pull_ntty_suppliers" type="object" string="Pull NTTY Suppliers" 
-						      attrs="{'invisible': [('len_detail_ids','>',0)]}" />
-					<button name="create_ntty_products" type="object" string="Create Products" 
-						     attrs="{'invisible':[('len_detail_ids', '==', 0)]}" />
 				</form>
 			</field>
 		</record>
