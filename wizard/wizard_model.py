@@ -317,6 +317,7 @@ class wizard_ntty_product_import(models.TransientModel):
 
 			        # This is the place
 			        # prod = self.env['product.template'].search([('ntty_id', '=', identifier)])
+				
 		                for part_number in part_numbers:
 			                if part_number['part_organization'] == 'ELMATICA AS':
                         			default_code = part_number.get('part_number','')
@@ -326,6 +327,7 @@ class wizard_ntty_product_import(models.TransientModel):
                         			part_description = part_number.get('part_description','')
 			                        product_code = part_number.get('part_number','')
                         			vals['product_code'] = product_code
+						default_code = product_code
 			        vals['default_code'] = default_code
 				if detail.partner_id.short_name and ntty_supplier_short_name and ntty_check_supliers:
 				        vals['name'] =  article_part_number + ' ' + product_code + ' ' + detail.partner_id.short_name
