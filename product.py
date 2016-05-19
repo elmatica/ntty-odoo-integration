@@ -67,7 +67,7 @@ class product_template(models.Model):
     panel_type = fields.Selection((('rigid', 'Rigid'), ('flex', 'Flexible')), 'Panel Type')
     pcb_weight = fields.Float('PCB Weight', help="The Weight of one PCB in grams",digits=dp.get_precision('Product Weight'))
     # sqm_pcb = fields.Float('Sqm PCB', help="PCB surface square meters",digits=dp.get_precision('Product UoS'))
-    sqm_pcb = fields.Float('Sqm PCB', help="PCB surface square meters")
+    # sqm_pcb = fields.Float('Sqm PCB', help="PCB surface square meters")
     signal_layers = fields.Integer('Signal Layers', help="PCB signal layers")
     product_brand_text = fields.Char('Product Owner as in NTTY')
     product_code = fields.Char('Product Code')
