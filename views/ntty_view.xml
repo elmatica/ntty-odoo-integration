@@ -125,7 +125,7 @@
         	                    <field name="panel_thickness"/>
                 	            <field name="panel_type"/>
                         	    <field name="pcb_weight"/>
-	                            <!-- field name="sqm_pcb"/ -->
+	                            <field name="sqm_pcb"/>
         	                    <field name="signal_layers"/>
                 	            <field name="lifecycle" attrs="{'invisible':True}"/>
 	                    </group>
