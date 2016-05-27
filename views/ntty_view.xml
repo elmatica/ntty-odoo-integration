@@ -199,8 +199,8 @@
             <field name="res_model">product.template</field>
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
-	    <field name="domain">[('ntty_id','!=','')]</field> 
-	    <field name="view_id">view_ntty_products_tree</field>
+	    <!-- field name="domain">[('ntty_id','!=','')]</field -->  
+	    <field name="view_id" ref="view_ntty_products_tree"></field>
         </record>
 
         <menuitem id="rule_menu" name="NTTY Configuration"
@@ -208,7 +208,8 @@
                   action="ntty_config_action"/>
 
         <menuitem id="ntty_products_menu" name="NTTY Products"
-                  parent="base.menu_ntty_config"
+                  parent="base.menu_product"
+		  sequence="100"
                   action="ntty_products_action"/>
 
 
