@@ -180,9 +180,36 @@
 	    <!-- field name="view_id">view_ntty_config_form</field -->
         </record>
 
+        <record model="ir.ui.view" id="view_ntty_products_tree">
+            <field name="name">ntty.products.tree</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+		<tree string="NTTY Products" create="false" delete="false">
+		<!-- tree string="NTTY Configuration"  -->
+			<field name="name" />
+			<field name="default_code" />
+			<field name="ntty_id" />
+			<field name="sqm_pcb" />
+		</tree>
+	    </field>
+	</record>
+
+        <record model="ir.actions.act_window" id="ntty_products_action">
+            <field name="name">NTTY Products</field>
+            <field name="res_model">product.template</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+	    <field name="domain">[('ntty_id','!=','')]</field> 
+	    <field name="view_id">view_ntty_products_tree</field>
+        </record>
+
         <menuitem id="rule_menu" name="NTTY Configuration"
                   parent="base.menu_ntty_config"
                   action="ntty_config_action"/>
+
+        <menuitem id="ntty_products_menu" name="NTTY Products"
+                  parent="base.menu_ntty_config"
+                  action="ntty_products_action"/>
 
 
     </data>
