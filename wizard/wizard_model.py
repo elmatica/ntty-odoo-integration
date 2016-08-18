@@ -103,7 +103,8 @@ class wizard_ntty_product_import(models.TransientModel):
 				}
 			self.env['wizard.ntty.product.import.detail'].create(vals_detail)
 
-		routes = self.env['stock.location.route'].search(['|',('name','=','Make To Order'),('name','=','Buy')])
+		# routes = self.env['stock.location.route'].search(['|',('name','=','Make To Order'),('name','=','Buy')])
+		routes = self.env['stock.location.route'].search([('name','=','Buy')])
 		if not routes:
 			raise osv.except_osv(('Error'), ('Routes MTO and Buy are not present!!!'))
                 	return None
@@ -112,7 +113,6 @@ class wizard_ntty_product_import(models.TransientModel):
 		created_products = []
 		for detail in self.detail_ids:
 			if detail.selected == 'yes':
-
 				entity = res['entity']
 			        part_numbers = res['part_numbers']
 				temp_wcp_weight = entity['values'].get('wcp_weight',False)
