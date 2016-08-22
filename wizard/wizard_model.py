@@ -429,7 +429,18 @@ class wizard_ntty_product_import(models.TransientModel):
 					}
 				product_template = prod.product_tmpl_id
 				product_template.write(vals)
-		return True
+                res = {
+                        "name": "product.template.ntty.pull"+str(product_template.id),
+                        "type": "ir.actions.act_window",
+                        "res_model": "product.template",
+                        "view_type": "form",
+                        "view_mode": "form",
+                        "view_id": "product.product_template_form_view",
+                        "res_id": product_template.id,
+                        "nodestroy": True,
+                        }
+                return res
+
 
 	@api.multi
 	def pull_ntty_suppliers(self):
