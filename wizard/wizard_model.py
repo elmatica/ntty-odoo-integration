@@ -435,7 +435,7 @@ class wizard_ntty_product_import(models.TransientModel):
                         "res_model": "product.template",
                         "view_type": "form",
                         "view_mode": "form",
-                        "view_id": "product.product_template_form_view",
+                        #"view_id": "product.product_template_form_view",
                         "res_id": product_template.id,
                         "nodestroy": True,
                         }
