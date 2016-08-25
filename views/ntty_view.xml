@@ -113,6 +113,7 @@
 			    <group name="Information">
 		                <field name="ntty_id" string="NTTY ID"/>
 		                <field name="ntty_odoo" string="NTTY ID/Odoo"/>
+		                <field name="ntty_name" string="NTTY Name"/>
 		                <field name="article_part_number" string="Product Owner Code"/>
                 		<field name="product_code" string="Customer Code"/>
                     		<field name="ntty_url" widget="url"/>

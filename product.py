@@ -54,6 +54,7 @@ class product_template(models.Model):
     ntty_exists = fields.Boolean(compute='_ntty_id_exists', store=True, string="NTTY", default=False)
     # article_part_number = fields.Char(string="Base Part Number")
     article_part_number = fields.Char(string="Product Owner Reference")
+    ntty_name = fields.Char(string="NTTY Name")
     ntty_id = fields.Char(string="NTTY ID")
     ntty_odoo = fields.Char(string="NTTY ID/ODOO")
     ntty_url = fields.Char(string="NTTY URL",readonly=True,compute='compute_ntty_url')
