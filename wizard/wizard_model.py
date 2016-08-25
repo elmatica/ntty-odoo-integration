@@ -243,6 +243,7 @@ class wizard_ntty_product_import(models.TransientModel):
 			        article_part_number = entity.get('name','N/A')
 			        identifier = entity.get('identifier','')
 			        article_part_name = entity.get('article_part_name','article_part_number')
+			        ntty_name = entity.get('article_part_name','N/A')
 				short_description = entity.get('short_description','')
 				long_description = entity.get('long_description','')
 				article_id = entity.get('article_id','')
@@ -287,6 +288,7 @@ class wizard_ntty_product_import(models.TransientModel):
 			                files = {}
 				vals = {
 		                    'name': article_part_name,
+		                    'ntty_name': ntty_name,
                 		    'article_part_number': article_part_number,
 		                    'description': long_description,
 		                    'ntty_id': identifier,
