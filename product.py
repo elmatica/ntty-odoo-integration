@@ -51,6 +51,7 @@ class product_product(models.Model):
 class product_template(models.Model):
     _inherit = 'product.template'
 
+    ntty_pull_log = fields.Text('NTTY Pull log')
     ntty_exists = fields.Boolean(compute='_ntty_id_exists', store=True, string="NTTY", default=False)
     # article_part_number = fields.Char(string="Base Part Number")
     article_part_number = fields.Char(string="Product Owner Reference")

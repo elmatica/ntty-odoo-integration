@@ -112,8 +112,10 @@ class wizard_ntty_product_import(models.TransientModel):
 
 		created_products = []
 		for detail in self.detail_ids:
+			ntty_pull_log = ''
 			if detail.selected == 'yes':
 				entity = res['entity']
+				ntty_pull_log = res['entity']
 			        part_numbers = res['part_numbers']
 				temp_wcp_weight = entity['values'].get('wcp_weight',False)
 				if not temp_wcp_weight:
@@ -289,6 +291,7 @@ class wizard_ntty_product_import(models.TransientModel):
 				vals = {
 		                    'name': article_part_name,
 		                    'ntty_name': ntty_name,
+				    'ntty_pull_log': ntty_pull_log,
                 		    'article_part_number': article_part_number,
 		                    'description': long_description,
 		                    'ntty_id': identifier,
